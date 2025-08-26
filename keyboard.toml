@@ -29,7 +29,7 @@ keymap = [
 enabled = true
 
 [behavior]
-tap_hold = { enable_hrm = true }
+tap_hold = { hold_timeout = "200ms", permissive_hold = true }
 
 [split]
 connection = "ble"
