@@ -3,8 +3,8 @@ MEMORY
   /* NOTE 1 K = 1 KiB = 1024 bytes */
 
   /* XIAO nRF52840 (with S140 SoftDevice and Adafruit nRF52 bootloader) */
-  FLASH : ORIGIN = 0x00027000, LENGTH = 868K
-  RAM : ORIGIN = 0x20000008, LENGTH = 255K
+  FLASH : ORIGIN = 0x00027000, LENGTH = 820K
+  RAM : ORIGIN = 0x20020000, LENGTH = 128K
 
   /* Reference: nRF52840 with Adafruit nRF52 bootloader */
   /* FLASH : ORIGIN = 0x00001000, LENGTH = 1020K */
