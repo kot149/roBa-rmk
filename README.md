@@ -45,10 +45,6 @@
    ```shell
    cargo make flash-central
    ```
-   または
-   ```shell
-   cargo make flash
-   ```
    peripheral(左手側)
    ```shell
    cargo make flash-peripheral

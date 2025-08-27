@@ -111,4 +111,4 @@ args = [
 dependencies = ["uf2-peripheral"]
 
 [tasks.flash]
-dependencies = ["flash-central"]
+dependencies = ["flash-central", "flash-peripheral"]
