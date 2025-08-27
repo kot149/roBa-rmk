@@ -126,3 +126,7 @@ col_offset = 0
 [split.peripheral.matrix]
 input_pins = ["P0_03", "P0_28", "P0_29", "P1_11"] # row
 output_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10", "P0_09"] # col
+
+[storage]
+# Uncomment to clear storage on boot
+# clear_storage = true
