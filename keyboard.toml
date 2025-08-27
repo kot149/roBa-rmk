@@ -1,6 +1,6 @@
 [keyboard]
-name = "roBa"
-product_name = "roBa"
+name = "roBa-rmk"
+product_name = "roBa-rmk"
 vendor_id = 0x4c4b
 product_id = 0x4643
 manufacturer = "RMK"

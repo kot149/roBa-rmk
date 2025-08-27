@@ -1848,7 +1848,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "roBa"
+name = "roBa-rmk"
 version = "0.1.0"
 dependencies = [
  "bt-hci",
