@@ -36,5 +36,20 @@
    ```
 5. uf2ファイルをコンパイルする
    ```shell
-   cargo make uf2 --release
+   cargo make uf2
+   ```
+6. uf2ファイルをフラッシュする
+   ※Windowsでのみ動作します。Windowsでない場合は、手動でフラッシュしてください
+
+   central(右手側)
+   ```shell
+   cargo make flash-central
+   ```
+   または
+   ```shell
+   cargo make flash
+   ```
+   peripheral(左手側)
+   ```shell
+   cargo make flash-peripheral
    ```

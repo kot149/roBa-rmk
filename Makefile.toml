@@ -81,3 +81,34 @@ dependencies = ["objcopy-peripheral"]
 
 [tasks.uf2]
 dependencies = ["uf2-central", "uf2-peripheral"]
+
+[tasks.flash-central]
+command = "powershell.exe"
+args = [
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "flash.ps1",
+    "-BuildDir",
+    ".",
+    "-Uf2File",
+    "roBa-central.uf2"
+]
+dependencies = ["uf2-central"]
+
+[tasks.flash-peripheral]
+command = "powershell.exe"
+args = [
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "flash.ps1",
+    "-BuildDir",
+    ".",
+    "-Uf2File",
+    "roBa-peripheral.uf2"
+]
+dependencies = ["uf2-peripheral"]
+
+[tasks.flash]
+dependencies = ["flash-central"]
