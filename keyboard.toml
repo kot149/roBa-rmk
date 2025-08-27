@@ -128,6 +128,15 @@ col_offset = 0
 input_pins  = ["P0_03", "P0_28", "P0_29", "P1_11"] # row
 output_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10", "P0_09"] # col
 
+[split.peripheral.input_device]
+[[split.peripheral.input_device.encoder]]
+internal_pullup = true
+pin_a = "P0_05"
+pin_b = "P0_02"
+phase = "default"
+resolution = 12
+reverse = false
+
 [storage]
 # Uncomment to clear storage on boot
 # clear_storage = true
