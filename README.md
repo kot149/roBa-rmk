@@ -1,4 +1,4 @@
-# roBa-RMK
+# roBa-rmk
 
 [roBa](https://github.com/kumamuk-git/roBa) のRMKファームウェアによる実装です。
 
