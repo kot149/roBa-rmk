@@ -1,11 +1,11 @@
 # roBa-rmk
 
-[roBa](https://github.com/kumamuk-git/roBa) のRMKファームウェアによる実装です。
+[roBa キーボード](https://github.com/kumamuk-git/roBa)のRMKファームウェアによる実装です。
 
 > [!WARNING]
 > - この実装は非公式です。原作者様への問い合わせはお控えください。
-> - 自己責任で使用してください。このファームウェアを使用することによるハードウェアの破損等について、責任を負いません。
-> - この実装は不完全です。特に、トラックボールやロータリーエンコーダーは未実装です。
+> - 自己責任で使用してください。このファームウェアを使用することによるハードウェアの損傷等について、作者は責任を負いません。
+> - トラックボール機能は未実装です。
 
 ## 実装状況
 
@@ -13,13 +13,23 @@
   - [x] 右手側 (Central)
   - [x] 左手側 (Peripheral)
 - [x] BLE対応
-  - [ ] バッテリー残量・充電状態の取得
 - [x] Vial対応
 - [x] ロータリーエンコーダー対応
-  - [ ] デフォルトキー設定
-  - [x] Vial対応
-- [ ] トラボ対応
-  - [ ] AML対応
+  - [ ] keyobard.tomlでのデフォルトの割り当て
+  - [x] Vialでの割り当て
+- [ ] トラックボール対応
+  - [ ] CPI設定
+  - [ ] 方向設定
+  - [ ] スクロールレイヤー
+  - [ ] オートマウスレイヤー
+- [ ] バッテリー残量・充電状態の取得
+
+## キーマップ変更手順
+
+[VIal](https://get.vial.today) に対応しています。以下のいずれかを使用してキーマップを変更してください。
+- [Vial(Web版)](https://vial.rocks)
+- [Vial(デスクトップ版)](https://get.vial.today/download/)
+- [VIA custom UI for Vial](https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/)
 
 ## ローカルビルド手順
 
@@ -28,7 +38,7 @@
    git clone https://github.com/kot149/roBa-rmk.git
    cd roBa-rmk
    ```
-2. [Rustup](https://www.rust-lang.org/ja/tools/install) をインストールする
+2. [Rustup](https://www.rust-lang.org/ja/tools/install)をインストールする
 3. nrf52840用のビルドターゲットを追加する
    ```shell
    rustup target add thumbv7em-none-eabihf
