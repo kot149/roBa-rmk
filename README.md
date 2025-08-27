@@ -1,6 +1,6 @@
 # roBa-rmk
 
-[roBa キーボード](https://github.com/kumamuk-git/roBa)のRMKファームウェアによる実装です。
+[roBa](https://github.com/kumamuk-git/roBa)キーボードのRMKファームウェアです。
 
 > [!WARNING]
 > - この実装は非公式です。原作者様への問い合わせはお控えください。
