@@ -20,13 +20,83 @@ matrix_map = """
 """
 layers = 8
 
-[[layer]]
-name = "default"
+[[layer]] # 0
+name = "Layer 0 - Default"
 keys = """
-Q     W     E    R         T                        Y      U   I      O     P
-A     S     D    F         G     _       _          H      J   K      L     Minus
-Z     X     C    V         B     _       _          N      M   Comma  Dot   Slash
-Lctrl LGui  LAlt Language2 Space Tab     Backspace  Enter                   Escape
+Q     W     E    R         LT(7,T)                  LT(7,Y)  U   I      O     P
+A     S     D    F         G     _       _          H        J   K      L     Minus
+Z     X     C    V         B     _       _          N        M   Comma  Dot   Slash
+Lctrl LGui  LAlt Language2 Space Tab     Backspace  Enter                     Escape
+"""
+
+[[layer]]
+name = "Layer 1"
+keys = """
+_    _    _    _    _                   _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _                   _
+"""
+
+[[layer]]
+name = "Layer 2"
+keys = """
+_    _    _    _    _                   _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _                   _
+"""
+
+[[layer]]
+name = "Layer 3"
+keys = """
+_    _    _    _    _                   _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _                   _
+"""
+
+[[layer]]
+name = "Layer 4"
+keys = """
+_    _    _    _    _                   _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _                   _
+"""
+
+[[layer]]
+name = "Layer 5"
+keys = """
+_    _    _    _    _                   _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _                   _
+"""
+
+[[layer]]
+name = "Layer 6"
+keys = """
+_    _    _    _    _                   _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _                   _
+"""
+
+[[layer]]
+name = "Layer 7 - Configuration"
+
+# User0 - User(N-1): switch to specific profile
+# UserN: switch to next profile
+# User(N+1): switch to previous profile
+# User(N+2): clear current profile bond info
+# User(N+3): switch default output between USB/BLE
+
+keys = """
+Bootloader  Reboot   _    _     _                      _     _      User8   Reboot  Bootloader
+_           _        _    _     _     _          User6 User5 _      _       _       _
+_           _        _    _     _     _          User0 User1 User2  User3   User4   User7
+_           _        _    _     _     _          _     _                            _
 """
 
 [ble]
