@@ -20,7 +20,7 @@ matrix_map = """
 """
 layers = 8
 
-[[layer]] # 0
+[[layer]]
 name = "Layer 0 - Default"
 keys = """
 Q     W     E     R          LT(7,T)                    LT(7,Y)  U   I      O     P
