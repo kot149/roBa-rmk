@@ -23,10 +23,10 @@ layers = 8
 [[layer]] # 0
 name = "Layer 0 - Default"
 keys = """
-Q     W     E    R         LT(7,T)                  LT(7,Y)  U   I      O     P
-A     S     D    F         G     _       _          H        J   K      L     Minus
-Z     X     C    V         B     _       _          N        M   Comma  Dot   Slash
-Lctrl LGui  LAlt Language2 Space Tab     Backspace  Enter                     Escape
+Q     W     E     R          LT(7,T)                    LT(7,Y)  U   I      O     P
+A     S     D     F          G       _       _          H        J   K      L     Minus
+Z     X     C     V          B       _       _          N        M   Comma  Dot   Slash
+Lctrl LGui  LAlt  Language2  Space   Tab     Backspace  Enter                     Escape
 """
 
 [[layer]]
@@ -93,10 +93,10 @@ name = "Layer 7 - Configuration"
 # User(N+3): switch default output between USB/BLE
 
 keys = """
-Bootloader  Reboot   _    _     _                      _     _      User8   Reboot  Bootloader
-_           _        _    _     _     _          User6 User5 _      _       _       _
-_           _        _    _     _     _          User0 User1 User2  User3   User4   User7
-_           _        _    _     _     _          _     _                            _
+Bootloader  Reboot   _    _     _                       _      _      User8  Reboot  Bootloader
+_           _        _    _     _     _          User6  User5  _      _      _       _
+_           _        _    _     _     _          User0  User1  User2  User3  User4   User7
+_           _        _    _     _     _          _      _                            _
 """
 
 [ble]
@@ -113,8 +113,9 @@ rows = 4
 cols = 5
 row_offset = 0
 col_offset = 6
+
 [split.central.matrix]
-input_pins = ["P0_03", "P0_28", "P0_29", "P1_11"] # row
+input_pins  = ["P0_03", "P0_28", "P0_29", "P1_11"] # row
 output_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10"] # col
 
 [[split.peripheral]]
@@ -124,7 +125,7 @@ row_offset = 0
 col_offset = 0
 
 [split.peripheral.matrix]
-input_pins = ["P0_03", "P0_28", "P0_29", "P1_11"] # row
+input_pins  = ["P0_03", "P0_28", "P0_29", "P1_11"] # row
 output_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10", "P0_09"] # col
 
 [storage]
