@@ -10,11 +10,14 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-rmk = { version = "0.7", features = [
+rmk = { version = "0.7", default-features = false, features = [
+    "col2row",
+    "storage",
     "nrf52840_ble",
     "split",
     "async_matrix",
     "adafruit_bl",
+    "usb_log"
 ] }
 nrf-sdc = { version = "0.1.0", default-features = false, features = [
     "defmt",
