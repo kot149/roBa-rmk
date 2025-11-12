@@ -82,28 +82,37 @@ dependencies = ["objcopy-peripheral"]
 [tasks.uf2]
 dependencies = ["uf2-central", "uf2-peripheral"]
 
-[tasks.flash-central]
+[tasks.flash-uf2]
+script_runner = "bash"
+script = '''
+if grep -q -i "Microsoft" /proc/version; then
+    powershell.exe -ExecutionPolicy Bypass -File flash.ps1 -Uf2File "$(wslpath -w ${@})"
+else
+    echo "Flashing is not supported on this platform." >&2
+    exit 1
+fi
+'''
+
+[tasks.flash-uf2.windows]
 command = "powershell.exe"
 args = [
-    "-ExecutionPolicy",
-    "Bypass",
-    "-File",
-    "flash.ps1",
-    "-Uf2File",
-    "roBa-central.uf2"
+    "-ExecutionPolicy", "Bypass",
+    "-File", "flash.ps1",
+    "-Uf2File", "${@}"
 ]
+
+[tasks.flash-uf2.mac]
+command = "bash"
+args = ["flash.sh", "${@}"]
+
+[tasks.flash-central]
+command = "cargo"
+args = ["make", "flash-uf2", "roBa-central.uf2"]
 dependencies = ["uf2-central"]
 
 [tasks.flash-peripheral]
-command = "powershell.exe"
-args = [
-    "-ExecutionPolicy",
-    "Bypass",
-    "-File",
-    "flash.ps1",
-    "-Uf2File",
-    "roBa-peripheral.uf2"
-]
+command = "cargo"
+args = ["make", "flash-uf2", "roBa-peripheral.uf2"]
 dependencies = ["uf2-peripheral"]
 
 [tasks.flash]
