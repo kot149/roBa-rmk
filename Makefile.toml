@@ -82,7 +82,7 @@ dependencies = ["objcopy-peripheral"]
 [tasks.uf2]
 dependencies = ["uf2-central", "uf2-peripheral"]
 
-[tasks.flash-uf2]
+[tasks.flash-uf2.linux]
 script_runner = "bash"
 script = '''
 if grep -q -i "Microsoft" /proc/version; then
