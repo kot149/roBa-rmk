@@ -2,7 +2,7 @@
 #![no_std]
 
 use rmk::macros::rmk_central;
-use roBa_rmk::{xiao_ble_enable_vbat_reading, BleConnectionLed};
+use roba_rmk::{xiao_ble_enable_vbat_reading, BleConnectionLed};
 use embassy_nrf::gpio::{Output, Level, OutputDrive};
 
 #[rmk_central]
