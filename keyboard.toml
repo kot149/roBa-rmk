@@ -20,6 +20,26 @@ matrix_map = """
 """
 layers = 8
 
+[aliases]
+# User0 - User(N-1): switch to specific profile, where N is ble_profiles_num
+bt_sel_0 = "User0"
+bt_sel_1 = "User1"
+bt_sel_2 = "User2"
+bt_sel_3 = "User3"
+bt_sel_4 = "User4"
+
+# UserN: switch to next profile
+bt_next = "User5"
+
+# User(N+1): switch to previous profile
+bt_prev = "User6"
+
+# User(N+2): clear current profile bond info
+bt_clr = "User7"
+
+# User(N+3): switch default output between USB/BLE
+bt_switch = "User8"
+
 [[layer]]
 name = "Layer 0 - Default"
 keys = """
@@ -86,21 +106,21 @@ _    _    _    _    _    _         _    _                   _
 [[layer]]
 name = "Layer 7 - Configuration"
 
-# User0 - User(N-1): switch to specific profile
-# UserN: switch to next profile
-# User(N+1): switch to previous profile
-# User(N+2): clear current profile bond info
-# User(N+3): switch default output between USB/BLE
-
 keys = """
-Bootloader  Reboot   _    _     _                       _      _      User8  Reboot  Bootloader
-_           _        _    _     _     _          User6  User5  _      _      _       _
-_           _        _    _     _     _          User0  User1  User2  User3  User4   User7
-_           _        _    _     _     _          _      _                            _
+Bootloader  Reboot   _    _     _                           _          _          @bt_switch  Reboot     Bootloader
+_           _        _    _     _     _          @bt_prev   @bt_next   _          _           _          _
+_           _        _    _     _     _          @bt_sel_0  @bt_sel_1  @bt_sel_2  @bt_sel_3   @bt_sel_4  @bt_clr
+_           _        _    _     _     _          _          _                                            _
 """
 
 [ble]
 enabled = true
+
+# XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
+# Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done in central.rs and peripheral.rs via the controller initialization.
+battery_adc_pin = "P0_31"
+adc_divider_measured = 510
+adc_divider_total = 1510
 
 [behavior]
 morse = { hold_timeout = "200ms", permissive_hold = true }
