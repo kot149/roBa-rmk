@@ -2,7 +2,7 @@
 #![no_std]
 
 use rmk::macros::rmk_peripheral;
-use roBa_rmk::{xiao_ble_enable_vbat_reading, SplitConnectionLed};
+use roba_rmk::{xiao_ble_enable_vbat_reading, SplitConnectionLed};
 use embassy_nrf::gpio::{Output, Level, OutputDrive};
 
 #[rmk_peripheral(id = 0)]
