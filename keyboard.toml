@@ -20,6 +20,26 @@ matrix_map = """
 """
 layers = 8
 
+[aliases]
+# User0 - User(N-1): switch to specific profile, where N is ble_profiles_num
+bt_sel_0 = "User0"
+bt_sel_1 = "User1"
+bt_sel_2 = "User2"
+bt_sel_3 = "User3"
+bt_sel_4 = "User4"
+
+# UserN: switch to next profile
+bt_next = "User5"
+
+# User(N+1): switch to previous profile
+bt_prev = "User6"
+
+# User(N+2): clear current profile bond info
+bt_clr = "User7"
+
+# User(N+3): switch default output between USB/BLE
+bt_switch = "User8"
+
 [[layer]]
 name = "Layer 0 - Default"
 keys = """
@@ -86,17 +106,11 @@ _    _    _    _    _    _         _    _                   _
 [[layer]]
 name = "Layer 7 - Configuration"
 
-# User0 - User(N-1): switch to specific profile
-# UserN: switch to next profile
-# User(N+1): switch to previous profile
-# User(N+2): clear current profile bond info
-# User(N+3): switch default output between USB/BLE
-
 keys = """
-Bootloader  Reboot   _    _     _                       _      _      User8  Reboot  Bootloader
-_           _        _    _     _     _          User6  User5  _      _      _       _
-_           _        _    _     _     _          User0  User1  User2  User3  User4   User7
-_           _        _    _     _     _          _      _                            _
+Bootloader  Reboot   _    _     _                           _          _          @bt_switch  Reboot     Bootloader
+_           _        _    _     _     _          @bt_prev   @bt_next   _          _           _          _
+_           _        _    _     _     _          @bt_sel_0  @bt_sel_1  @bt_sel_2  @bt_sel_3   @bt_sel_4  @bt_clr
+_           _        _    _     _     _          _          _                                            _
 """
 
 [ble]
