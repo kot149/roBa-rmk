@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+mod led;
 mod vial;
 #[macro_use]
 mod macros;
@@ -28,8 +29,9 @@ use rmk::config::{
 };
 use rmk::controller::EventController as _;
 use rmk::controller::led_indicator::KeyboardIndicatorController;
+use led::BleConnectionLed;
 use rmk::debounce::default_debouncer::DefaultDebouncer;
-use rmk::futures::future::join4;
+use rmk::futures::future::{join4, join5};
 use rmk::input_device::Runnable;
 use rmk::input_device::adc::{AnalogEventType, NrfAdc};
 use rmk::input_device::battery::BatteryProcessor;
@@ -238,6 +240,18 @@ async fn main(spawner: Spawner) {
         false,
         rmk::types::led_indicator::LedIndicatorType::CapsLock,
     );
+    let mut ble_led = BleConnectionLed::new(
+        Output::new(
+            p.P0_06,
+            embassy_nrf::gpio::Level::High,
+            embassy_nrf::gpio::OutputDrive::Standard,
+        ),
+        Output::new(
+            p.P0_26,
+            embassy_nrf::gpio::Level::High,
+            embassy_nrf::gpio::OutputDrive::Standard,
+        ),
+    );
 
     // Start
     join4(
@@ -248,11 +262,12 @@ async fn main(spawner: Spawner) {
             EVENT_CHANNEL => [batt_proc],
         },
         keyboard.run(),
-        join4(
+        join5(
             run_peripheral_manager::<4, 6, 0, 0, _>(0, &peripheral_addrs, &stack),
             run_rmk(&keymap, driver, &stack, &mut storage, rmk_config),
             scan_peripherals(&stack, &peripheral_addrs),
             capslock_led.event_loop(),
+            ble_led.event_loop(),
         ),
     )
     .await;

@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+mod led;
 #[macro_use]
 mod macros;
 
@@ -21,7 +22,9 @@ use rmk::ble::build_ble_stack;
 use rmk::channel::EVENT_CHANNEL;
 use rmk::config::StorageConfig;
 use rmk::debounce::default_debouncer::DefaultDebouncer;
-use rmk::futures::future::join;
+use rmk::controller::EventController as _;
+use rmk::futures::future::join3;
+use led::SplitConnectionLed;
 use rmk::input_device::rotary_encoder::RotaryEncoder;
 use rmk::matrix::Matrix;
 use rmk::split::peripheral::run_rmk_split_peripheral;
@@ -159,12 +162,27 @@ async fn main(spawner: Spawner) {
     let pin_b = Input::new(p.P0_02, embassy_nrf::gpio::Pull::Up);
     let mut encoder = RotaryEncoder::with_resolution(pin_a, pin_b, 4, false, 0);
 
+    // Initialize the controllers
+    let mut split_led = SplitConnectionLed::new(
+        Output::new(
+            p.P0_06,
+            embassy_nrf::gpio::Level::High,
+            embassy_nrf::gpio::OutputDrive::Standard,
+        ),
+        Output::new(
+            p.P0_26,
+            embassy_nrf::gpio::Level::High,
+            embassy_nrf::gpio::OutputDrive::Standard,
+        ),
+    );
+
     // Start
-    join(
+    join3(
         run_devices! (
-            (matrix, encoder) => EVENT_CHANNEL, // Peripheral uses EVENT_CHANNEL to send events to central
+            (matrix, encoder) => EVENT_CHANNEL,
         ),
         run_rmk_split_peripheral(0, &stack, &mut storage),
+        split_led.event_loop(),
     )
     .await;
 }
