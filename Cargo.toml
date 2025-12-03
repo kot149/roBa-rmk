@@ -55,6 +55,8 @@ rand = { version = "0.8.4", default-features = false }
 rand_core = { version = "0.6" }
 rand_chacha = { version = "0.3", default-features = false }
 
+pmw3610-rs = { path = "pmw3610-rs", features = ["embassy-nrf", "rmk"] }
+
 [build-dependencies]
 xz2 = "0.1.7"
 json = "0.12"

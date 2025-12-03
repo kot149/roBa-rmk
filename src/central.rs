@@ -9,8 +9,9 @@ mod keymap;
 
 use defmt::{info, unwrap};
 use embassy_executor::Spawner;
-use embassy_nrf::gpio::{Input, Output};
+use embassy_nrf::gpio::{Flex, Input, Output};
 use embassy_nrf::interrupt::{self, InterruptExt};
+use pmw3610_rs::{Pmw3610Config, Pmw3610Device};
 use embassy_nrf::mode::Async;
 use embassy_nrf::peripherals::{RNG, SAADC, USBD};
 use embassy_nrf::saadc::{self, AnyInput, Input as _, Saadc};
@@ -230,6 +231,20 @@ async fn main(spawner: Spawner) {
     );
     let mut batt_proc = BatteryProcessor::new(510, 1510, &keymap);
 
+    // Initialize PMW3610 mouse sensor
+    let pmw3610_config = Pmw3610Config {
+        res_cpi: 800,
+        smart_mode: true,
+        swap_xy: true,
+        invert_y: true,
+        ..Default::default()
+    };
+    let pmw3610_sck = Output::new(p.P0_05, embassy_nrf::gpio::Level::High, embassy_nrf::gpio::OutputDrive::Standard);
+    let pmw3610_sdio = Flex::new(p.P0_04);
+    let pmw3610_cs = Output::new(p.P0_09, embassy_nrf::gpio::Level::High, embassy_nrf::gpio::OutputDrive::Standard);
+    let pmw3610_irq = Input::new(p.P0_02, embassy_nrf::gpio::Pull::Up);
+    let mut pmw3610_device = Pmw3610Device::new(pmw3610_sck, pmw3610_sdio, pmw3610_cs, Some(pmw3610_irq), pmw3610_config);
+
     // Initialize the controllers
     let mut capslock_led = KeyboardIndicatorController::new(
         Output::new(
@@ -256,7 +271,7 @@ async fn main(spawner: Spawner) {
     // Start
     join4(
         run_devices! (
-            (matrix, adc_device) => EVENT_CHANNEL,
+            (matrix, adc_device, pmw3610_device) => EVENT_CHANNEL,
         ),
         run_processor_chain! {
             EVENT_CHANNEL => [batt_proc],
