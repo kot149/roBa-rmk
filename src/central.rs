@@ -187,8 +187,8 @@ async fn main(spawner: Spawner) {
     let storage_config = StorageConfig {
         start_addr: 0xA0000,
         num_sectors: 6,
-        clear_storage: false,
-        clear_layout: true,
+        // clear_storage: true,
+        // clear_layout: true,
         ..Default::default()
     };
     let rmk_config = RmkConfig {
@@ -254,7 +254,7 @@ async fn main(spawner: Spawner) {
     );
 
     // Initialize joystick processor
-    let mut joystick_proc = JoystickProcessor::new([[1, 0], [0, 1]], [0, 0], 4, &keymap);
+    let mut joystick_proc = JoystickProcessor::new([[1, 0], [0, 1]], [0, 0], 1, &keymap);
 
     // Initialize scroll layer processor
     let mut scroll_proc = ScrollLayerProcessor::new(&[5, 6], 8, false, &keymap);
