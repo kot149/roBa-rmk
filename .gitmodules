@@ -1,3 +1,6 @@
 [submodule "pmw3610-rs"]
 	path = pmw3610-rs
 	url = https://github.com/kot149/pmw3610-rs.git
+[submodule "rmk-scroll-layer-processor"]
+	path = rmk-scroll-layer-processor
+	url = https://github.com/kot149/rmk-scroll-layer-processor.git
