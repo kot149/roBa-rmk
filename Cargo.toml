@@ -55,7 +55,7 @@ rand = { version = "0.8.4", default-features = false }
 rand_core = { version = "0.6" }
 rand_chacha = { version = "0.3", default-features = false }
 
-pmw3610-rs = { path = "pmw3610-rs", features = ["embassy-nrf", "rmk"] }
+pmw3610-rs = { path = "pmw3610-rs", features = ["rmk"] }
 rmk-scroll-layer-processor = { path = "rmk-scroll-layer-processor" }
 
 [build-dependencies]

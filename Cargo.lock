@@ -1626,7 +1626,6 @@ name = "pmw3610-rs"
 version = "0.1.0"
 dependencies = [
  "defmt 1.0.1",
- "embassy-nrf",
  "embassy-time",
  "embedded-hal 1.0.0",
  "embedded-hal-async",
