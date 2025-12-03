@@ -11,7 +11,7 @@ use defmt::{info, unwrap};
 use embassy_executor::Spawner;
 use embassy_nrf::gpio::{Flex, Input, Output};
 use embassy_nrf::interrupt::{self, InterruptExt};
-use pmw3610_rs::{Pmw3610Config, Pmw3610Device};
+use pmw3610_rs::{BitBangSpiBus, Pmw3610Config, Pmw3610Device};
 use rmk::input_device::joystick::JoystickProcessor;
 use rmk_scroll_layer_processor::{ScrollLayerProcessor, ScrollLayerTracker};
 use embassy_nrf::mode::Async;
@@ -238,6 +238,7 @@ async fn main(spawner: Spawner) {
         res_cpi: 800,
         smart_mode: true,
         swap_xy: true,
+        // invert_x: true,
         invert_y: true,
         ..Default::default()
     };
@@ -245,9 +246,9 @@ async fn main(spawner: Spawner) {
     let pmw3610_sdio = Flex::new(p.P0_04);
     let pmw3610_cs = Output::new(p.P0_09, embassy_nrf::gpio::Level::High, embassy_nrf::gpio::OutputDrive::Standard);
     let pmw3610_irq = Input::new(p.P0_02, embassy_nrf::gpio::Pull::Up);
+    let pmw3610_spi = BitBangSpiBus::new(pmw3610_sck, pmw3610_sdio);
     let mut pmw3610_device = Pmw3610Device::new(
-        pmw3610_sck,
-        pmw3610_sdio,
+        pmw3610_spi,
         pmw3610_cs,
         Some(pmw3610_irq),
         pmw3610_config,
