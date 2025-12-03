@@ -1622,6 +1622,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7edddbd0b52d732b21ad9a5fab5c704c14cd949e5e9a1ec5929a24fded1b904c"
 
 [[package]]
+name = "pmw3610-rs"
+version = "0.1.0"
+dependencies = [
+ "defmt 1.0.1",
+ "embassy-nrf",
+ "embassy-time",
+ "embedded-hal 1.0.0",
+ "rmk",
+ "usbd-hid 0.9.0",
+]
+
+[[package]]
 name = "portable-atomic"
 version = "1.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1894,6 +1906,7 @@ dependencies = [
  "nrf-mpsl",
  "nrf-sdc",
  "panic-probe",
+ "pmw3610-rs",
  "rand",
  "rand_chacha",
  "rand_core 0.6.4",
