@@ -12,6 +12,8 @@ use embassy_executor::Spawner;
 use embassy_nrf::gpio::{Flex, Input, Output};
 use embassy_nrf::interrupt::{self, InterruptExt};
 use pmw3610_rs::{Pmw3610Config, Pmw3610Device};
+use rmk::input_device::joystick::JoystickProcessor;
+use rmk_scroll_layer_processor::{ScrollLayerProcessor, ScrollLayerTracker};
 use embassy_nrf::mode::Async;
 use embassy_nrf::peripherals::{RNG, SAADC, USBD};
 use embassy_nrf::saadc::{self, AnyInput, Input as _, Saadc};
@@ -32,7 +34,7 @@ use rmk::controller::EventController as _;
 use rmk::controller::led_indicator::KeyboardIndicatorController;
 use led::BleConnectionLed;
 use rmk::debounce::default_debouncer::DefaultDebouncer;
-use rmk::futures::future::{join4, join5};
+use rmk::futures::future::{join, join4, join5};
 use rmk::input_device::Runnable;
 use rmk::input_device::adc::{AnalogEventType, NrfAdc};
 use rmk::input_device::battery::BatteryProcessor;
@@ -231,7 +233,7 @@ async fn main(spawner: Spawner) {
     );
     let mut batt_proc = BatteryProcessor::new(510, 1510, &keymap);
 
-    // Initialize PMW3610 mouse sensor
+    // Initialize PMW3610 mouse sensor with scroll layer support
     let pmw3610_config = Pmw3610Config {
         res_cpi: 800,
         smart_mode: true,
@@ -243,7 +245,19 @@ async fn main(spawner: Spawner) {
     let pmw3610_sdio = Flex::new(p.P0_04);
     let pmw3610_cs = Output::new(p.P0_09, embassy_nrf::gpio::Level::High, embassy_nrf::gpio::OutputDrive::Standard);
     let pmw3610_irq = Input::new(p.P0_02, embassy_nrf::gpio::Pull::Up);
-    let mut pmw3610_device = Pmw3610Device::new(pmw3610_sck, pmw3610_sdio, pmw3610_cs, Some(pmw3610_irq), pmw3610_config);
+    let mut pmw3610_device = Pmw3610Device::new(
+        pmw3610_sck,
+        pmw3610_sdio,
+        pmw3610_cs,
+        Some(pmw3610_irq),
+        pmw3610_config,
+    );
+
+    // Initialize joystick processor
+    let mut joystick_proc = JoystickProcessor::new([[1, 0], [0, 1]], [0, 0], 4, &keymap);
+
+    // Initialize scroll layer processor
+    let mut scroll_proc = ScrollLayerProcessor::new(&keymap, &[5, 6], 8, false);
 
     // Initialize the controllers
     let mut capslock_led = KeyboardIndicatorController::new(
@@ -267,6 +281,7 @@ async fn main(spawner: Spawner) {
             embassy_nrf::gpio::OutputDrive::Standard,
         ),
     );
+    let mut scroll_layer_tracker = ScrollLayerTracker::new();
 
     // Start
     join4(
@@ -274,15 +289,18 @@ async fn main(spawner: Spawner) {
             (matrix, adc_device, pmw3610_device) => EVENT_CHANNEL,
         ),
         run_processor_chain! {
-            EVENT_CHANNEL => [batt_proc],
+            EVENT_CHANNEL => [batt_proc, scroll_proc, joystick_proc],
         },
         keyboard.run(),
-        join5(
-            run_peripheral_manager::<4, 6, 0, 0, _>(0, &peripheral_addrs, &stack),
-            run_rmk(&keymap, driver, &stack, &mut storage, rmk_config),
-            scan_peripherals(&stack, &peripheral_addrs),
-            capslock_led.event_loop(),
-            ble_led.event_loop(),
+        join(
+            join5(
+                run_peripheral_manager::<4, 6, 0, 0, _>(0, &peripheral_addrs, &stack),
+                run_rmk(&keymap, driver, &stack, &mut storage, rmk_config),
+                scan_peripherals(&stack, &peripheral_addrs),
+                capslock_led.event_loop(),
+                ble_led.event_loop(),
+            ),
+            scroll_layer_tracker.event_loop(),
         ),
     )
     .await;

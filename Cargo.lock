@@ -1630,7 +1630,6 @@ dependencies = [
  "embassy-time",
  "embedded-hal 1.0.0",
  "rmk",
- "usbd-hid 0.9.0",
 ]
 
 [[package]]
@@ -1877,6 +1876,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rmk-scroll-layer-processor"
+version = "0.1.0"
+dependencies = [
+ "defmt 1.0.1",
+ "rmk",
+ "usbd-hid 0.9.0",
+]
+
+[[package]]
 name = "rmk-types"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1911,6 +1919,7 @@ dependencies = [
  "rand_chacha",
  "rand_core 0.6.4",
  "rmk",
+ "rmk-scroll-layer-processor",
  "static_cell",
  "xz2",
 ]
