@@ -257,7 +257,7 @@ async fn main(spawner: Spawner) {
     let mut joystick_proc = JoystickProcessor::new([[1, 0], [0, 1]], [0, 0], 4, &keymap);
 
     // Initialize scroll layer processor
-    let mut scroll_proc = ScrollLayerProcessor::new(&keymap, &[5, 6], 8, false);
+    let mut scroll_proc = ScrollLayerProcessor::new(&[5, 6], 8, false, &keymap);
 
     // Initialize the controllers
     let mut capslock_led = KeyboardIndicatorController::new(
