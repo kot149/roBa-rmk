@@ -237,9 +237,9 @@ async fn main(spawner: Spawner) {
     let pmw3610_config = Pmw3610Config {
         res_cpi: 800,
         smart_mode: true,
-        swap_xy: true,
-        // invert_x: true,
-        invert_y: true,
+        // swap_xy: true,
+        invert_x: true,
+        // invert_y: true,
         ..Default::default()
     };
     let pmw3610_sck = Output::new(p.P0_05, embassy_nrf::gpio::Level::High, embassy_nrf::gpio::OutputDrive::Standard);
