@@ -6,11 +6,11 @@ description = "Keyboard firmware written in Rust"
 homepage = "https://github.com/haobogu/rmk"
 repository = "https://github.com/kot149/roBa-rmk"
 readme = "README.md"
-edition = "2021"
+edition = "2024"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-rmk = { version = "0.8", features = [
+rmk = { path = "../rmk/rmk", features = [
     "nrf52840_ble",
     "split",
     "async_matrix",
