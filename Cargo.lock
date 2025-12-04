@@ -1781,7 +1781,11 @@ checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
 
 [[package]]
 name = "rmk"
+<<<<<<< HEAD
 version = "0.8.2"
+=======
+version = "0.8.1"
+>>>>>>> 53fbeaf (Use pmw3610 via keyboard.toml)
 dependencies = [
  "bitfield-struct",
  "bt-hci",
@@ -1825,7 +1829,11 @@ dependencies = [
 
 [[package]]
 name = "rmk-config"
+<<<<<<< HEAD
 version = "0.6.1"
+=======
+version = "0.6.0"
+>>>>>>> 53fbeaf (Use pmw3610 via keyboard.toml)
 dependencies = [
  "cargo_toml",
  "config",
@@ -1841,7 +1849,11 @@ dependencies = [
 
 [[package]]
 name = "rmk-macro"
+<<<<<<< HEAD
 version = "0.7.1"
+=======
+version = "0.7.0"
+>>>>>>> 53fbeaf (Use pmw3610 via keyboard.toml)
 dependencies = [
  "cargo_toml",
  "darling",
@@ -1860,7 +1872,11 @@ dependencies = [
 
 [[package]]
 name = "rmk-types"
+<<<<<<< HEAD
 version = "0.2.2"
+=======
+version = "0.2.1"
+>>>>>>> 53fbeaf (Use pmw3610 via keyboard.toml)
 dependencies = [
  "bitfield-struct",
  "defmt 1.0.1",
