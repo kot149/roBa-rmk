@@ -201,3 +201,67 @@ _           _        _    _     _     _          @bt_sel_0  @bt_sel_1  @bt_sel_2
 _           _        _    _     _     _          _          _                                            _
 """
 encoders = [["_", "_"]]
+
+[ble]
+enabled = true
+
+# XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
+# Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done in central.rs and peripheral.rs via the controller initialization.
+battery_adc_pin = "P0_31"
+adc_divider_measured = 510
+adc_divider_total = 1510
+
+[behavior]
+morse = { hold_timeout = "200ms", permissive_hold = true }
+
+[split]
+connection = "ble"
+
+[split.central]
+rows = 4
+cols = 5
+row_offset = 0
+col_offset = 6
+
+[split.central.matrix]
+row_pins = ["P0_03", "P0_28", "P0_29", "P1_11"]
+col_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10"]
+
+[[split.peripheral]]
+rows = 4
+cols = 6
+row_offset = 0
+col_offset = 0
+
+[split.peripheral.matrix]
+row_pins = ["P0_03", "P0_28", "P0_29", "P1_11"]
+col_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10", "P0_09"]
+
+[split.central.input_device]
+[[split.central.input_device.pmw3610]]
+name = "trackball"
+sclk = "P0_05"
+sdio = "P0_04"
+cs = "P0_09"
+motion = "P0_02"
+
+force_awake = false
+smart_mode = true
+
+cpi = 800
+invert_x = true
+# invert_y = true
+# swap_xy = true
+
+[split.peripheral.input_device]
+[[split.peripheral.input_device.encoder]]
+internal_pullup = true
+pin_a = "P0_05"
+pin_b = "P0_02"
+phase = "default"
+resolution = 12
+reverse = false
+
+[storage]
+# Uncomment to clear storage on boot
+# clear_storage = true
