@@ -6,7 +6,7 @@ install_crate = { crate_name = "flip-link", binary = "flip-link", test_arg = ["-
 
 [tasks.build-central]
 command = "cargo"
-args = ["build", "--release", "--bin", "central"]
+args = ["build", "--release"]
 dependencies = ["install-llvm-tools", "flip-link"]
 
 [tasks.build-peripheral]
@@ -26,8 +26,6 @@ command = "cargo"
 args = [
     "objcopy",
     "--release",
-    "--bin",
-    "central",
     "--",
     "-O",
     "ihex",

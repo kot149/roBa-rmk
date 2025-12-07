@@ -89,12 +89,12 @@ reverse = false
 
 [layout]
 rows = 4
-cols = 11
+cols = 5
 matrix_map = """
-(0,0) (0,1) (0,2) (0,3) (0,4)                 (0,6) (0,7) (0,8) (0,9) (0,10)
-(1,0) (1,1) (1,2) (1,3) (1,4) (1,5)     (3,6) (1,6) (1,7) (1,8) (1,9) (1,10)
-(2,0) (2,1) (2,2) (2,3) (2,4) (2,5)     (3,7) (2,6) (2,7) (2,8) (2,9) (2,10)
-(3,0) (3,1) (3,2) (3,3) (3,4) (3,5)     (3,8) (3,9)                   (3,10)
+      (0,0) (0,1) (0,2) (0,3) (0,4)
+(3,0) (1,0) (1,1) (1,2) (1,3) (1,4)
+(3,1) (2,0) (2,1) (2,2) (2,3) (2,4)
+(3,2) (3,3)                   (3,4)
 """
 layers = 8
 
@@ -124,70 +124,70 @@ bt_switch = "User8"
 [[layer]]
 name = "Layer 0 - Default"
 keys = """
-Q     W     E     R          LT(7,T)                    LT(7,Y)  U   I      O     P
-A     S     D     F          G       _       _          H        J   K      L     Minus
-Z     X     C     V          B       _       _          N        M   Comma  Dot   Slash
-Lctrl LGui  LAlt  Language2  Space   Tab     Backspace  Enter                     Escape
+LT(7,Y) U    I    O    Q
+H      J    K    L    Minus
+N      M    Comma Dot  Slash
+Space  Tab  Backspace Enter Escape
 """
 encoders = [["PageDown", "PageUp"]]
 
 [[layer]]
 name = "Layer 1"
 keys = """
-_    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _                   _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
 """
 encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 2"
 keys = """
-_    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _                   _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
 """
 encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 3"
 keys = """
-_    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _                   _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
 """
 encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 4"
 keys = """
-_    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _                   _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
 """
 encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 5"
 keys = """
-_    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _                   _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
 """
 encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 6"
 keys = """
-_    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _                   _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
 """
 encoders = [["_", "_"]]
 
@@ -195,10 +195,10 @@ encoders = [["_", "_"]]
 name = "Layer 7 - Configuration"
 
 keys = """
-Bootloader  Reboot   _    _     _                           _          _          @bt_switch  Reboot     Bootloader
-_           _        _    _     _     _          @bt_prev   @bt_next   _          _           _          _
-_           _        _    _     _     _          @bt_sel_0  @bt_sel_1  @bt_sel_2  @bt_sel_3   @bt_sel_4  @bt_clr
-_           _        _    _     _     _          _          _                                            _
+Bootloader Reboot _ _ _
+@bt_prev   @bt_next _ _ _
+@bt_sel_0  @bt_sel_1 @bt_sel_2 @bt_sel_3 @bt_sel_4
+@bt_switch _ _ _ @bt_clr
 """
 encoders = [["_", "_"]]
 
@@ -214,35 +214,17 @@ adc_divider_total = 1510
 [behavior]
 morse = { hold_timeout = "200ms", permissive_hold = true }
 
-[split]
-connection = "ble"
-
-[split.central]
-rows = 4
-cols = 5
-row_offset = 0
-col_offset = 6
-
-[split.central.matrix]
+[matrix]
 row_pins = ["P0_03", "P0_28", "P0_29", "P1_11"]
 col_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10"]
 
-[[split.peripheral]]
-rows = 4
-cols = 6
-row_offset = 0
-col_offset = 0
-
-[split.peripheral.matrix]
-row_pins = ["P0_03", "P0_28", "P0_29", "P1_11"]
-col_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10", "P0_09"]
-
-[split.central.input_device]
-[[split.central.input_device.pmw3610]]
-name = "trackball"
-sclk = "P0_05"
-sdio = "P0_04"
-cs = "P0_09"
+[[input_device.pmw3610]]
+name = "trackball0"
+spi.instance = "bitbang01"
+spi.sck = "P0_05"
+spi.mosi = "P0_04"
+spi.miso = "P0_04"
+spi.cs = "P0_09"
 motion = "P0_02"
 
 force_awake = false
@@ -252,15 +234,6 @@ cpi = 800
 invert_x = true
 # invert_y = true
 # swap_xy = true
-
-[split.peripheral.input_device]
-[[split.peripheral.input_device.encoder]]
-internal_pullup = true
-pin_a = "P0_05"
-pin_b = "P0_02"
-phase = "default"
-resolution = 12
-reverse = false
 
 [storage]
 # Uncomment to clear storage on boot

@@ -11,15 +11,14 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 rmk = { path = "../rmk/rmk", features = [
-    "nrf52840_ble",
-    "split",
     "async_matrix",
+    "nrf52840_ble",
     "adafruit_bl",
+    "controller",
 ] }
 nrf-sdc = { git = "https://github.com/alexmoon/nrf-sdc", rev = "11d5c3c", features = [
     "defmt",
     "peripheral",
-    "central",
     "nrf52840",
 ] }
 nrf-mpsl = { git = "https://github.com/alexmoon/nrf-sdc", rev = "11d5c3c", features = [
@@ -31,7 +30,7 @@ bt-hci = { version = "0.6", features = ["defmt"] }
 
 cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"
-embassy-time = { version = "0.5", features = ["tick-hz-32_768", "defmt", "defmt-timestamp-uptime"] }
+embassy-time = { version = "0.5", features = ["tick-hz-32_768", "defmt"] }
 embassy-nrf = { version = "0.8", features = [
     "defmt",
     "nrf52840",
@@ -60,14 +59,10 @@ xz2 = "0.1.7"
 json = "0.12"
 const-gen = "1.6"
 
-# Split keyboard example
 [[bin]]
-name = "central"
-path = "src/central.rs"
-
-[[bin]]
-name = "peripheral"
-path = "src/peripheral.rs"
+name = "roba-rmk"
+test = false
+bench = false
 
 [profile.dev]
 codegen-units = 1      # better optimizations
