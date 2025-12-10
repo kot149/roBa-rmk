@@ -148,6 +148,24 @@ col_offset = 0
 row_pins = ["P0_03", "P0_28", "P0_29", "P1_11"]
 col_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10", "P0_09"]
 
+[split.central.input_device]
+[[split.central.input_device.pmw3610]]
+name = "trackball0"
+spi.instance = "bitbang0"
+spi.sck = "P0_05"
+spi.mosi = "P0_04"
+spi.miso = "P0_04"
+spi.cs = "P0_09"
+motion = "P0_02"
+
+force_awake = false
+smart_mode = true
+
+cpi = 800
+invert_x = true
+# invert_y = true
+# swap_xy = true
+
 [split.peripheral.input_device]
 [[split.peripheral.input_device.encoder]]
 internal_pullup = true
