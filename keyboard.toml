@@ -8,6 +8,7 @@ board = "XIAO BLE"
 
 [rmk]
 ble_profiles_num = 5
+controller_channel_pubs = 16
 
 [layout]
 rows = 4
