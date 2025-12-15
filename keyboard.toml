@@ -129,6 +129,7 @@ A     S     D     F          G       _       _          H        J   K      L   
 Z     X     C     V          B       _       _          N        M   Comma  Dot   Slash
 Lctrl LGui  LAlt  Language2  Space   Tab     Backspace  Enter                     Escape
 """
+encoders = [["PageDown", "PageUp"]]
 
 [[layer]]
 name = "Layer 1"
@@ -138,6 +139,7 @@ _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
+encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 2"
@@ -147,6 +149,7 @@ _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
+encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 3"
@@ -156,6 +159,7 @@ _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
+encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 4"
@@ -165,6 +169,7 @@ _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
+encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 5"
@@ -174,6 +179,7 @@ _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
+encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 6"
@@ -183,6 +189,7 @@ _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
+encoders = [["_", "_"]]
 
 [[layer]]
 name = "Layer 7 - Configuration"
@@ -193,3 +200,4 @@ _           _        _    _     _     _          @bt_prev   @bt_next   _        
 _           _        _    _     _     _          @bt_sel_0  @bt_sel_1  @bt_sel_2  @bt_sel_3   @bt_sel_4  @bt_clr
 _           _        _    _     _     _          _          _                                            _
 """
+encoders = [["_", "_"]]
