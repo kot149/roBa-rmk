@@ -16,32 +16,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install clang dependencies
-        run: sudo apt-get update && sudo apt-get install -y libclang-dev
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: thumbv7em-none-eabihf
-
-      - name: Install cargo-make
-        run: cargo install cargo-make
-
-      - name: Build UF2
-        run: cargo make uf2
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: roBa-rmk
-          path: |
-            roBa-central.uf2
-            roBa-peripheral.uf2
+    uses: ./.github/workflows/build.yml
 
   release:
     needs: build
