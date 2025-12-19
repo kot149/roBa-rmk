@@ -34,6 +34,10 @@ jobs:
       - name: Build UF2
         run: cargo make uf2
 
+      - name: Calculate hash
+        run: |
+          sha256sum *.uf2
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
