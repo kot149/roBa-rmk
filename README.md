@@ -25,6 +25,10 @@
   - [ ] バッテリー残量インジケーター
   - [ ] 充電状態インジケーター
 
+## ビルド済みファイルのダウンロード
+
+[Releases](https://github.com/kot149/roBa-rmk/releases) からダウンロードできます。
+
 ## キーマップ変更手順
 
 [VIal](https://get.vial.today) に対応しています。以下のいずれかを使用してキーマップを変更してください。
@@ -32,7 +36,13 @@
 - [Vial(デスクトップ版)](https://get.vial.today/download/)
 - [VIA custom UI for Vial](https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/)
 
-## ローカルビルド手順
+## ビルド手順
+
+### GitHub Actionsによるビルド
+
+GitHub Actionsでビルドできます。ワークフローファイルは[こちら](.github/workflows/build.yml)
+
+### ローカルビルド手順
 
 1. リポジトリをクローンする
    ```shell
@@ -53,7 +63,7 @@
    cargo make uf2
    ```
 6. uf2ファイルをフラッシュする
-   ※Windows・macOSでのみ動作します。Linuxでは、手動でフラッシュしてください
+   ※Windows・macOSでのみ動作します。
 
    central(右手側)
    ```shell
