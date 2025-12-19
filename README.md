@@ -50,19 +50,20 @@ GitHub Actionsでビルドできます。ワークフローファイルは[こ�
    cd roBa-rmk
    ```
 2. [Rustup](https://www.rust-lang.org/ja/tools/install)をインストールする
-3. nrf52840用のビルドターゲットを追加する
+3. Windowsの場合、[LLVMをインストール](https://rust-lang.github.io/rust-bindgen/requirements.html#windows)し、環境変数`LIBCLANG_PATH`を`(LLVMのインストール先)\bin`に設定する
+4. nrf52840用のビルドターゲットを追加する
    ```shell
    rustup target add thumbv7em-none-eabihf
    ```
-4. rmkit, flip-link, cargo-makeをインストールする
+5. rmkit, flip-link, cargo-makeをインストールする
    ```shell
    cargo install rmkit flip-link cargo-make
    ```
-5. uf2ファイルをコンパイルする
+6. uf2ファイルをコンパイルする
    ```shell
    cargo make uf2
    ```
-6. uf2ファイルをフラッシュする
+7. uf2ファイルをフラッシュする
    ※Windows・macOSでのみ動作します。
 
    central(右手側)
@@ -73,3 +74,33 @@ GitHub Actionsでビルドできます。ワークフローファイルは[こ�
    ```shell
    cargo make flash-peripheral
    ```
+
+#### トラブルシューティング
+
+##### WindowsでClangライブラリが見つからないエラー
+
+エラー内容:
+```
+Unable to find libclang: "couldn't find any valid shared libraries matching: ['clang.dll', 'libclang.dll'], set the `LIBCLANG_PATH` environment variable to a path where one of these files can be found (invalid: [])"
+```
+
+解決方法:
+[LLVMをインストール](https://rust-lang.github.io/rust-bindgen/requirements.html#windows)し、環境変数`LIBCLANG_PATH`を`(LLVMのインストール先)\bin`に設定してください。
+
+##### Rustcのスタックオーバーフロー
+
+エラー内容:
+```
+thread 'rustc' (xxxxx) has overflowed its stack
+```
+
+解決方法:
+環境変数`RUST_MIN_STACK`を18388608に設定してください。
+
+```powershell
+$env:RUST_MIN_STACK = "18388608"
+```
+または
+```bash
+export RUST_MIN_STACK=18388608
+```
