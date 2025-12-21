@@ -13,48 +13,22 @@ ble_profiles_num = 5
 enabled = true
 
 # XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
-# Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done via [[split.central.output]] and [[split.peripheral.output]] configs.
+# Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done via [[output]] config.
 battery_adc_pin = "P0_31"
 adc_divider_measured = 510
 adc_divider_total = 1510
 
-[split]
-connection = "ble"
-
-[split.central]
-rows = 4
-cols = 5
-row_offset = 0
-col_offset = 6
-
-[[split.central.output]]
+[[output]]
 # Set P0.14 (VBAT_ENABLE) to LOW to enable battery voltage reading for XIAO BLE.
 pin = "P0_14"
 initial_state_active = true
 low_active = true
 
-[split.central.matrix]
+[matrix]
 row_pins = ["P0_03", "P0_28", "P0_29", "P1_11"]
 col_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10"]
 
-[[split.peripheral]]
-rows = 4
-cols = 6
-row_offset = 0
-col_offset = 0
-
-[[split.peripheral.output]]
-# Set P0.14 (VBAT_ENABLE) to LOW to enable battery voltage reading for XIAO BLE.
-pin = "P0_14"
-initial_state_active = true
-low_active = true
-
-[split.peripheral.matrix]
-row_pins = ["P0_03", "P0_28", "P0_29", "P1_11"]
-col_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10", "P0_09"]
-
-[split.central.input_device]
-[[split.central.input_device.pmw3610]]
+[[input_device.pmw3610]]
 name = "trackball0"
 spi.instance = "bitbang0"
 spi.sck = "P0_05"
@@ -71,14 +45,7 @@ invert_x = true
 # invert_y = true
 # swap_xy = true
 
-[split.peripheral.input_device]
-[[split.peripheral.input_device.encoder]]
-internal_pullup = true
-pin_a = "P0_05"
-pin_b = "P0_02"
-phase = "default"
-resolution = 12
-reverse = false
+report_hz = 90
 
 [storage]
 # Uncomment to clear keymap data modified via Vial
@@ -201,40 +168,3 @@ Bootloader Reboot _ _ _
 @bt_switch _ _ _ @bt_clr
 """
 encoders = [["_", "_"]]
-
-[ble]
-enabled = true
-
-# XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
-# Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done in central.rs and peripheral.rs via the controller initialization.
-battery_adc_pin = "P0_31"
-adc_divider_measured = 510
-adc_divider_total = 1510
-
-[behavior]
-morse = { hold_timeout = "200ms", permissive_hold = true }
-
-[matrix]
-row_pins = ["P0_03", "P0_28", "P0_29", "P1_11"]
-col_pins = ["P1_15", "P1_14", "P1_13", "P1_12", "P0_10"]
-
-[[input_device.pmw3610]]
-name = "trackball0"
-spi.instance = "bitbang01"
-spi.sck = "P0_05"
-spi.mosi = "P0_04"
-spi.miso = "P0_04"
-spi.cs = "P0_09"
-motion = "P0_02"
-
-force_awake = false
-smart_mode = true
-
-cpi = 800
-invert_x = true
-# invert_y = true
-# swap_xy = true
-
-[storage]
-# Uncomment to clear storage on boot
-# clear_storage = true
