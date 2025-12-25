@@ -11,9 +11,7 @@ use defmt::{info, unwrap};
 use embassy_executor::Spawner;
 use embassy_nrf::gpio::{Flex, Input, Output};
 use embassy_nrf::interrupt::{self, InterruptExt};
-use pmw3610_rs::{BitBangSpiBus, Pmw3610Config, Pmw3610Device};
-use rmk::input_device::joystick::JoystickProcessor;
-use rmk_scroll_layer_processor::{ScrollLayerProcessor, ScrollLayerTracker};
+use rmk::controller::PollingController;
 use embassy_nrf::mode::Async;
 use embassy_nrf::peripherals::{RNG, SAADC, USBD};
 use embassy_nrf::saadc::{self, AnyInput, Input as _, Saadc};
@@ -38,9 +36,12 @@ use rmk::futures::future::{join, join4, join5};
 use rmk::input_device::Runnable;
 use rmk::input_device::adc::{AnalogEventType, NrfAdc};
 use rmk::input_device::battery::BatteryProcessor;
+use rmk::input_device::pmw3610::{BitBangSpiBus, Pmw3610Config, Pmw3610Device, Pmw3610Processor};
 use rmk::keyboard::Keyboard;
+use rmk::matrix::{Matrix, OffsetMatrixWrapper};
 use rmk::split::ble::central::{read_peripheral_addresses, scan_peripherals};
-use rmk::split::central::{CentralMatrix, run_peripheral_manager};
+use rmk::split::central::run_peripheral_manager;
+use rmk::types::led_indicator::LedIndicatorType;
 use rmk::{HostResources, initialize_encoder_keymap_and_storage, run_devices, run_processor_chain, run_rmk};
 use static_cell::StaticCell;
 use vial::{VIAL_KEYBOARD_DEF, VIAL_KEYBOARD_ID};
@@ -217,7 +218,8 @@ async fn main(spawner: Spawner) {
 
     // Initialize the matrix and keyboard
     let debouncer = DefaultDebouncer::new();
-    let mut matrix = CentralMatrix::<_, _, _, 0, 6, 4, 5, true>::new(row_pins, col_pins, debouncer);
+    let central_matrix = Matrix::<_, _, _, 4, 5, true>::new(row_pins, col_pins, debouncer);
+    let mut matrix = OffsetMatrixWrapper::<4, 5, _, 0, 6>(central_matrix);
     // let mut matrix = TestMatrix::<ROW, COL>::new();
     let mut keyboard = Keyboard::new(&keymap);
 
@@ -254,22 +256,19 @@ async fn main(spawner: Spawner) {
         pmw3610_config,
     );
 
-    // Initialize joystick processor
-    let mut joystick_proc = JoystickProcessor::new([[1, 0], [0, 1]], [0, 0], 1, &keymap);
+    let mut pmw3610_processor = Pmw3610Processor::new(&keymap);
+    let mut pmw3610_processor_chain = pmw3610_processor.clone();
 
-    // Initialize scroll layer processor
-    let mut scroll_proc = ScrollLayerProcessor::new(&[5, 6], 8, false, &keymap);
-
-    // Initialize the controllers
     let mut capslock_led = KeyboardIndicatorController::new(
         Output::new(
-            p.P0_00,
-            embassy_nrf::gpio::Level::Low,
+            p.P0_08,
+            embassy_nrf::gpio::Level::High,
             embassy_nrf::gpio::OutputDrive::Standard,
         ),
-        false,
-        rmk::types::led_indicator::LedIndicatorType::CapsLock,
+        true,
+        LedIndicatorType::CapsLock,
     );
+
     let mut ble_led = BleConnectionLed::new(
         Output::new(
             p.P0_06,
@@ -282,7 +281,6 @@ async fn main(spawner: Spawner) {
             embassy_nrf::gpio::OutputDrive::Standard,
         ),
     );
-    let mut scroll_layer_tracker = ScrollLayerTracker::new();
 
     // Start
     join4(
@@ -290,7 +288,7 @@ async fn main(spawner: Spawner) {
             (matrix, adc_device, pmw3610_device) => EVENT_CHANNEL,
         ),
         run_processor_chain! {
-            EVENT_CHANNEL => [batt_proc, scroll_proc, joystick_proc],
+            EVENT_CHANNEL => [batt_proc, pmw3610_processor_chain],
         },
         keyboard.run(),
         join(
@@ -301,7 +299,7 @@ async fn main(spawner: Spawner) {
                 capslock_led.event_loop(),
                 ble_led.event_loop(),
             ),
-            scroll_layer_tracker.event_loop(),
+            pmw3610_processor.polling_loop(),
         ),
     )
     .await;
