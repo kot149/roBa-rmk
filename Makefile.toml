@@ -94,7 +94,7 @@ dependencies = ["uf2-central", "uf2-peripheral"]
 script_runner = "bash"
 script = '''
 if grep -q -i "Microsoft" /proc/version; then
-    powershell.exe -ExecutionPolicy Bypass -File flash.ps1 -Uf2File "$(wslpath -w ${@})"
+    powershell.exe -ExecutionPolicy Bypass -File scripts/flash.ps1 -Uf2File "$(wslpath -w ${@})"
 else
     echo "Flashing is not supported on this platform." >&2
     exit 1
@@ -105,13 +105,13 @@ fi
 command = "powershell.exe"
 args = [
     "-ExecutionPolicy", "Bypass",
-    "-File", "flash.ps1",
+    "-File", "scripts/flash.ps1",
     "-Uf2File", "${@}"
 ]
 
 [tasks.flash-uf2.mac]
 command = "bash"
-args = ["flash.sh", "${@}"]
+args = ["scripts/flash.sh", "${@}"]
 
 [tasks.flash-central]
 command = "cargo"
