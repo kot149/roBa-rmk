@@ -9,6 +9,9 @@ board = "XIAO BLE"
 [rmk]
 ble_profiles_num = 5
 
+controller_channel_pubs = 14 # default: 12
+controller_channel_subs = 10 # default: 8
+
 [ble]
 enabled = true
 
