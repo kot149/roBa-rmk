@@ -63,6 +63,8 @@ spi.miso = "P0_04"
 spi.cs = "P0_09"
 motion = "P0_02"
 
+report_hz = 75
+
 force_awake = false
 smart_mode = true
 
