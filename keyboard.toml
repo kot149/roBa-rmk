@@ -12,6 +12,9 @@ ble_profiles_num = 5
 [ble]
 enabled = true
 
+default_tx_power = 0
+ble_use_2m_phy = true
+
 # XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
 # Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done via [[split.central.output]] and [[split.peripheral.output]] configs.
 battery_adc_pin = "P0_31"
