@@ -18,12 +18,6 @@ enabled = true
 default_tx_power = 0
 use_2m_phy = true
 
-# XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
-# Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done via [[split.central.output]] and [[split.peripheral.output]] configs.
-battery_adc_pin = "P0_31"
-adc_divider_measured = 510
-adc_divider_total = 1510
-
 [split]
 connection = "ble"
 
@@ -32,6 +26,12 @@ rows = 4
 cols = 5
 row_offset = 0
 col_offset = 6
+
+# XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
+# Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done via [[split.central.output]] and [[split.peripheral.output]] configs.
+battery_adc_pin = "P0_31"
+adc_divider_measured = 510
+adc_divider_total = 1510
 
 [[split.central.output]]
 # Set P0.14 (VBAT_ENABLE) to LOW to enable battery voltage reading for XIAO BLE.
@@ -48,6 +48,12 @@ rows = 4
 cols = 6
 row_offset = 0
 col_offset = 0
+
+# XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
+# Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done via [[split.central.output]] and [[split.peripheral.output]] configs.
+battery_adc_pin = "P0_31"
+adc_divider_measured = 510
+adc_divider_total = 1510
 
 [[split.peripheral.output]]
 # Set P0.14 (VBAT_ENABLE) to LOW to enable battery voltage reading for XIAO BLE.
