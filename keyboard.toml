@@ -9,8 +9,8 @@ board = "XIAO BLE"
 [rmk]
 ble_profiles_num = 5
 
-controller_channel_pubs = 13 # default: 12
-controller_channel_subs = 9 # default: 8
+# controller_channel_pubs = 13 # default: 12
+# controller_channel_subs = 9 # default: 8
 
 [ble]
 enabled = true
@@ -51,9 +51,9 @@ col_offset = 0
 
 # XIAO BLE nRF52840: Battery voltage is read from P0.31 (AIN7) with a voltage divider (1MΩ + 510kΩ), measuring across 510kΩ.
 # Note that P0.14 (VBAT_ENABLE) must be set LOW to enable battery voltage reading. This is done via [[split.central.output]] and [[split.peripheral.output]] configs.
-battery_adc_pin = "P0_31"
-adc_divider_measured = 510
-adc_divider_total = 1510
+# battery_adc_pin = "P0_31"
+# adc_divider_measured = 510
+# adc_divider_total = 1510
 
 [[split.peripheral.output]]
 # Set P0.14 (VBAT_ENABLE) to LOW to enable battery voltage reading for XIAO BLE.
