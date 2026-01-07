@@ -15,7 +15,7 @@ ble_profiles_num = 5
 [ble]
 enabled = true
 
-default_tx_power = 0
+default_tx_power = 8
 use_2m_phy = true
 
 [split]
