@@ -138,20 +138,20 @@ bt_switch = "User8"
 [[layer]]
 name = "Layer 0 - Default"
 keys = """
-Q     W     E     R          LT(7,T)                    LT(7,Y)  U   I      O     P
-A     S     D     F          G       _       _          H        J   K      L     Minus
-Z     X     C     V          B       _       _          N        M   Comma  Dot   Slash
-Lctrl LGui  LAlt  Language2  Space   Tab     Backspace  Enter                     Escape
+MT(Q,LGui)      MT(W,LAlt)     E     R          LT(7,T)                                      LT(7,Y)        U   I      O     P
+MT(A,LCtrl)     S              D     F          G             _             _                H              J   K      L     Minus
+MT(Z,LShift)    X              C     V          B             _             _                N              M   Comma  Dot   Slash
+Lctrl           LGui           LAlt  Language2  LT(1,Space)   LT(2,Tab)     LT(2,Backspace)  LT(1,Enter)                     Escape
 """
 encoders = [["PageDown", "PageUp"]]
 
 [[layer]]
 name = "Layer 1"
 keys = """
-_    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
-_    _    _    _    _    _         _    _                   _
+_    7    8    9    _                    _    _    _    _    _
+_    4    5    6    _        _      _    _    _    _    _    _
+0    1    2    3    _        _      _    _    _    _    _    _
+_    _    _    _    Enter    _      _    _                   _
 """
 encoders = [["_", "_"]]
 
