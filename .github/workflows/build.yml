@@ -39,7 +39,7 @@ jobs:
           sha256sum *.uf2
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: roBa-rmk
           path: |
