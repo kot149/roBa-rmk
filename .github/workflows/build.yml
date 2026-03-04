@@ -38,10 +38,14 @@ jobs:
         run: |
           sha256sum *.uf2
 
-      - name: Upload artifact
+      - name: Upload artifact (central)
         uses: actions/upload-artifact@v7
         with:
-          name: roBa-rmk
-          path: |
-            roBa-central.uf2
-            roBa-peripheral.uf2
+          archive: false
+          path: roBa-central.uf2
+
+      - name: Upload artifact (peripheral)
+        uses: actions/upload-artifact@v7
+        with:
+          archive: false
+          path: roBa-peripheral.uf2
