@@ -11,7 +11,11 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 # rmk = { version = "0.8", features = [
-rmk = { git = "https://github.com/HaoboGu/rmk", rev = "aff596f68e70242d7f4ad190e95a0253c9b8530c", features = [
+rmk = { git = "https://github.com/HaoboGu/rmk", rev = "aff596f68e70242d7f4ad190e95a0253c9b8530c", default-features = false, features = [
+    "col2row",
+    "storage",
+    "vial",
+    "usb_log",
     "nrf52840_ble",
     "split",
     "async_matrix",
