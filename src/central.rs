@@ -6,12 +6,13 @@ mod vial;
 #[macro_use]
 mod macros;
 mod keymap;
+mod pointingproccontroller;
 
+use crate::pointingproccontroller::PointingProcessorController;
 use defmt::{info, unwrap};
 use embassy_executor::Spawner;
 use embassy_nrf::gpio::{Flex, Input, Output};
 use embassy_nrf::interrupt::{self, InterruptExt};
-use rmk::controller::PollingController;
 use embassy_nrf::mode::Async;
 use embassy_nrf::peripherals::{RNG, SAADC, USBD};
 use embassy_nrf::saadc::{self, AnyInput, Input as _, Saadc};
@@ -23,26 +24,26 @@ use nrf_sdc::mpsl::MultiprotocolServiceLayer;
 use nrf_sdc::{self as sdc, mpsl};
 use rand_chacha::ChaCha12Rng;
 use rand_core::SeedableRng;
-use rmk::ble::build_ble_stack;
-use rmk::channel::EVENT_CHANNEL;
+use rmk::ble::{build_ble_stack, BleTransport};
 use rmk::config::{
     BehaviorConfig, BleBatteryConfig, DeviceConfig, PositionalConfig, RmkConfig, StorageConfig, VialConfig,
 };
-use rmk::controller::EventController as _;
-use rmk::controller::led_indicator::KeyboardIndicatorController;
+use rmk::processor::builtin::led_indicator::KeyboardIndicatorProcessor;
 use led::BleConnectionLed;
 use rmk::debounce::default_debouncer::DefaultDebouncer;
-use rmk::futures::future::{join, join4, join5};
-use rmk::input_device::Runnable;
+use rmk::futures::future::{join, join3};
 use rmk::input_device::adc::{AnalogEventType, NrfAdc};
 use rmk::input_device::battery::BatteryProcessor;
-use rmk::input_device::pmw3610::{BitBangSpiBus, Pmw3610Config, Pmw3610Device, Pmw3610Processor};
+use rmk::input_device::pmw3610::{BitBangSpiBus, Pmw3610Config, Pmw3610};
+use rmk::input_device::pointing::{PointingDevice, PointingProcessor, PointingProcessorConfig};
 use rmk::keyboard::Keyboard;
-use rmk::matrix::{Matrix, OffsetMatrixWrapper};
-use rmk::split::ble::central::{read_peripheral_addresses, scan_peripherals};
+use rmk::matrix::Matrix;
+use rmk::split::ble::central::scan_peripherals;
 use rmk::split::central::run_peripheral_manager;
 use rmk::types::led_indicator::LedIndicatorType;
-use rmk::{HostResources, initialize_encoder_keymap_and_storage, run_devices, run_processor_chain, run_rmk};
+use rmk::usb::UsbTransport;
+use rmk::host::HostService;
+use rmk::{HostResources, KeymapData, initialize_keymap_and_storage, run_all};
 use static_cell::StaticCell;
 use vial::{VIAL_KEYBOARD_DEF, VIAL_KEYBOARD_ID};
 use {defmt_rtt as _, panic_probe as _};
@@ -79,15 +80,15 @@ fn build_sdc<'d, const N: usize>(
     mem: &'d mut sdc::Mem<N>,
 ) -> Result<nrf_sdc::SoftdeviceController<'d>, nrf_sdc::Error> {
     sdc::Builder::new()?
-        .support_scan()?
-        .support_central()?
-        .support_adv()?
-        .support_peripheral()?
-        .support_dle_peripheral()?
-        .support_dle_central()?
-        .support_phy_update_central()?
-        .support_phy_update_peripheral()?
-        .support_le_2m_phy()?
+        .support_scan()
+        .support_central()
+        .support_adv()
+        .support_peripheral()
+        .support_dle_peripheral()
+        .support_dle_central()
+        .support_phy_update_central()
+        .support_phy_update_peripheral()
+        .support_le_2m_phy()
         .central_count(1)?
         .peripheral_count(1)?
         .buffer_cfg(L2CAP_MTU as u16, L2CAP_MTU as u16, L2CAP_TXQ, L2CAP_RXQ)?
@@ -111,6 +112,8 @@ fn ble_addr() -> [u8; 6] {
     let addr = addr | 0x0000_c000_0000_0000;
     unwrap!(addr.to_le_bytes()[..6].try_into())
 }
+
+
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
@@ -137,7 +140,7 @@ async fn main(spawner: Spawner) {
         lfclk_cfg,
         SESSION_MEM.init(mpsl::SessionMem::new())
     )));
-    spawner.must_spawn(mpsl_task(&*mpsl));
+    spawner.spawn(mpsl_task(&*mpsl).unwrap());
     let sdc_p = sdc::Peripherals::new(
         p.PPI_CH17, p.PPI_CH18, p.PPI_CH20, p.PPI_CH21, p.PPI_CH22, p.PPI_CH23, p.PPI_CH24, p.PPI_CH25, p.PPI_CH26,
         p.PPI_CH27, p.PPI_CH28, p.PPI_CH29,
@@ -201,39 +204,37 @@ async fn main(spawner: Spawner) {
 
     // Initialze keyboard stuffs
     // Initialize the storage and keymap
-    let mut default_keymap = keymap::get_default_keymap();
+    let mut keymap_data = KeymapData::new_with_encoder(keymap::get_default_keymap(), keymap::get_default_encoder_map());
     let mut behavior_config = BehaviorConfig::default();
     behavior_config.morse.enable_flow_tap = true;
-    let mut encoder_map: [[rmk::types::action::EncoderAction; _]; _] = keymap::get_default_encoder_map();
-    let mut key_config = PositionalConfig::default();
-    let (keymap, mut storage) = initialize_encoder_keymap_and_storage(
-        &mut default_keymap,
-        &mut encoder_map,
+    let key_config = PositionalConfig::default();
+    let (keymap, mut storage) = initialize_keymap_and_storage(
+        &mut keymap_data,
         flash,
         &storage_config,
         &mut behavior_config,
-        &mut key_config,
+        &key_config,
     )
     .await;
 
     // Initialize the matrix and keyboard
     let debouncer = DefaultDebouncer::new();
-    let central_matrix = Matrix::<_, _, _, 4, 5, true>::new(row_pins, col_pins, debouncer);
-    let mut matrix = OffsetMatrixWrapper::<4, 5, _, 0, 6>(central_matrix);
+    let mut matrix = Matrix::<_, _, _, 4, 5, true, 0, 6>::new(row_pins, col_pins, debouncer);
     // let mut matrix = TestMatrix::<ROW, COL>::new();
     let mut keyboard = Keyboard::new(&keymap);
 
     // Read peripheral address from storage
-    let peripheral_addrs = read_peripheral_addresses::<1, _, 4, 11, 8, 1>(&mut storage).await;
+    let peripheral_addrs = storage.read_peripheral_addresses::<1>().await;
 
     // Initialize the encoder processor
     let mut adc_device = NrfAdc::new(
         saadc,
         [AnalogEventType::Battery],
+        [0],
         embassy_time::Duration::from_secs(12),
         None,
     );
-    let mut batt_proc = BatteryProcessor::new(510, 1510, &keymap);
+    let mut batt_proc = BatteryProcessor::new(510, 1510);
 
     // Initialize PMW3610 mouse sensor with scroll layer support
     let pmw3610_config = Pmw3610Config {
@@ -249,17 +250,18 @@ async fn main(spawner: Spawner) {
     let pmw3610_cs = Output::new(p.P0_09, embassy_nrf::gpio::Level::High, embassy_nrf::gpio::OutputDrive::Standard);
     let pmw3610_irq = Input::new(p.P0_02, embassy_nrf::gpio::Pull::Up);
     let pmw3610_spi = BitBangSpiBus::new(pmw3610_sck, pmw3610_sdio);
-    let mut pmw3610_device = Pmw3610Device::new(
+    let mut pmw3610_device = PointingDevice::<Pmw3610<_, _, _>>::new(
+        0,
         pmw3610_spi,
         pmw3610_cs,
         Some(pmw3610_irq),
         pmw3610_config,
     );
 
-    let mut pmw3610_processor = Pmw3610Processor::new(&keymap);
-    let mut pmw3610_processor_chain = pmw3610_processor.clone();
+    let mut pmw3610_processor = PointingProcessor::new(&keymap, PointingProcessorConfig::default());
+    let mut pointing_controller = PointingProcessorController::new();
 
-    let mut capslock_led = KeyboardIndicatorController::new(
+    let mut capslock_led = KeyboardIndicatorProcessor::new(
         Output::new(
             p.P0_08,
             embassy_nrf::gpio::Level::High,
@@ -282,25 +284,32 @@ async fn main(spawner: Spawner) {
         ),
     );
 
+    let host_ctx = rmk::host::KeyboardContext::new(&keymap);
+    let mut host_service = HostService::new(&host_ctx, &rmk_config);
+    let mut usb_transport = UsbTransport::new(driver, rmk_config.device_config);
+    let mut ble_transport = BleTransport::new(&stack, rmk_config).await;
+
     // Start
-    join4(
-        run_devices! (
-            (matrix, adc_device, pmw3610_device) => EVENT_CHANNEL,
+    join3(
+        run_all!(
+            matrix,
+            adc_device,
+            storage,
+            usb_transport,
+            ble_transport,
+            batt_proc,
+            keyboard,
+            host_service,
+            capslock_led,
+            pmw3610_device,
+            pmw3610_processor,
+            pointing_controller
         ),
-        run_processor_chain! {
-            EVENT_CHANNEL => [batt_proc, pmw3610_processor_chain],
-        },
-        keyboard.run(),
         join(
-            join5(
-                run_peripheral_manager::<4, 6, 0, 0, _>(0, &peripheral_addrs, &stack),
-                run_rmk(&keymap, driver, &stack, &mut storage, rmk_config),
-                scan_peripherals(&stack, &peripheral_addrs),
-                capslock_led.event_loop(),
-                ble_led.event_loop(),
-            ),
-            pmw3610_processor.polling_loop(),
+            run_peripheral_manager::<4, 6, 0, 0, _>(0, &peripheral_addrs, &stack),
+            scan_peripherals(&stack, &peripheral_addrs),
         ),
+        ble_led.run(),
     )
     .await;
 }

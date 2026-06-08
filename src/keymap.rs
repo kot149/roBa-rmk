@@ -1,5 +1,5 @@
 use rmk::types::action::{EncoderAction, KeyAction};
-use rmk::{a, encoder, k, lt};
+use rmk::{a, encoder, k, lt, kbctrl, user};
 
 pub(crate) const COL: usize = 11;
 pub(crate) const ROW: usize = 4;
@@ -60,10 +60,10 @@ pub const fn get_default_keymap() -> [[[KeyAction; COL]; ROW]; NUM_LAYER] {
         ],
         // Layer 7 - Configuration
         [
-            [k!(Bootloader), k!(Reboot), a!(No), a!(No), a!(No), a!(No), a!(No), a!(No), k!(User8), k!(Reboot), k!(Bootloader)],
-            [a!(No),         a!(No),     a!(No), a!(No), a!(No), a!(No), a!(No), a!(No), a!(No),    a!(No),     a!(No)],
-            [a!(No),         a!(No),     a!(No), a!(No), a!(No), a!(No), a!(No), a!(No), a!(No),    a!(No),     k!(User7)],
-            [a!(No),         a!(No),     a!(No), a!(No), a!(No), a!(No), k!(User6), k!(User5), k!(User0), k!(User1), a!(No)],
+            [kbctrl!(Bootloader), kbctrl!(Reboot), a!(No), a!(No), a!(No), a!(No), a!(No), a!(No), user!(8), kbctrl!(Reboot), kbctrl!(Bootloader)],
+            [a!(No),             a!(No),         a!(No), a!(No), a!(No), a!(No), a!(No), a!(No), a!(No),    a!(No),         a!(No)],
+            [a!(No),             a!(No),         a!(No), a!(No), a!(No), a!(No), a!(No), a!(No), a!(No),    a!(No),         user!(7)],
+            [a!(No),             a!(No),         a!(No), a!(No), a!(No), a!(No), user!(6), user!(5), user!(0), user!(1),     a!(No)],
         ],
     ]
 }

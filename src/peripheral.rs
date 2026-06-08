@@ -19,17 +19,15 @@ use nrf_sdc::{self as sdc, mpsl};
 use rand_chacha::ChaCha12Rng;
 use rand_core::SeedableRng;
 use rmk::ble::build_ble_stack;
-use rmk::channel::EVENT_CHANNEL;
 use rmk::config::StorageConfig;
 use rmk::debounce::default_debouncer::DefaultDebouncer;
-use rmk::controller::EventController as _;
 use rmk::futures::future::join3;
 use led::SplitConnectionLed;
 use rmk::input_device::rotary_encoder::RotaryEncoder;
 use rmk::matrix::Matrix;
 use rmk::split::peripheral::run_rmk_split_peripheral;
 use rmk::storage::new_storage_for_split_peripheral;
-use rmk::{HostResources, run_devices};
+use rmk::{HostResources, run_all};
 use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
 
@@ -65,11 +63,11 @@ fn build_sdc<'d, const N: usize>(
     mem: &'d mut sdc::Mem<N>,
 ) -> Result<nrf_sdc::SoftdeviceController<'d>, nrf_sdc::Error> {
     sdc::Builder::new()?
-        .support_adv()?
-        .support_peripheral()?
-        .support_dle_peripheral()?
-        .support_phy_update_peripheral()?
-        .support_le_2m_phy()?
+        .support_adv()
+        .support_peripheral()
+        .support_dle_peripheral()
+        .support_phy_update_peripheral()
+        .support_le_2m_phy()
         .peripheral_count(1)?
         .buffer_cfg(L2CAP_MTU as u16, L2CAP_MTU as u16, L2CAP_TXQ, L2CAP_RXQ)?
         .build(p, rng, mpsl, mem)
@@ -118,7 +116,7 @@ async fn main(spawner: Spawner) {
         lfclk_cfg,
         SESSION_MEM.init(mpsl::SessionMem::new())
     )));
-    spawner.must_spawn(mpsl_task(&*mpsl));
+    spawner.spawn(mpsl_task(&*mpsl).unwrap());
     let sdc_p = sdc::Peripherals::new(
         p.PPI_CH17, p.PPI_CH18, p.PPI_CH20, p.PPI_CH21, p.PPI_CH22, p.PPI_CH23, p.PPI_CH24, p.PPI_CH25, p.PPI_CH26,
         p.PPI_CH27, p.PPI_CH28, p.PPI_CH29,
@@ -178,11 +176,9 @@ async fn main(spawner: Spawner) {
 
     // Start
     join3(
-        run_devices! (
-            (matrix, encoder) => EVENT_CHANNEL,
-        ),
-        run_rmk_split_peripheral(0, &stack, &mut storage),
-        split_led.event_loop(),
+        run_all!(matrix, encoder, storage),
+        run_rmk_split_peripheral(0, &stack),
+        split_led.run(),
     )
     .await;
 }
