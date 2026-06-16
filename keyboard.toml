@@ -96,7 +96,7 @@ reverse = false
 
 [storage]
 # Uncomment to clear keymap data modified via Vial
-# clear_layout = true
+clear_layout = true
 
 # Uncomment to clear ALL storage (keymap and BLE bonds)
 # clear_storage = true
@@ -139,7 +139,7 @@ bt_switch = "User8"
 name = "Layer 0 - Default"
 keys = """
 MT(Q,LGui)      MT(W,LAlt)     E     R          LT(7,T)                                      LT(7,Y)        U   I      O     P
-MT(A,LCtrl)     S              D     F          G             _             _                H              J   K      L     Minus
+MT(A,LCtrl)     S              D     F          G             _             _                H              J   K      L     LT(6,Minus)
 MT(Z,LShift)    X              C     V          B             _             _                N              M   Comma  Dot   Slash
 Lctrl           LGui           LAlt  Language2  LT(1,Space)   LT(2,Tab)     LT(2,Backspace)  LT(1,Enter)                     Escape
 """

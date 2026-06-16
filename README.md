@@ -12,7 +12,7 @@
 - [x] Vial対応
 - [x] ロータリーエンコーダー対応
 - [x] トラックボール対応
-  - [ ] スクロールレイヤー
+  - [x] スクロールレイヤー
   - [ ] オートマウスレイヤー
 - [x] バッテリー
   - [x] バッテリー稼働
@@ -36,6 +36,17 @@
 - [Vial(デスクトップ版)](https://get.vial.today/download/)
 - [Pipette](https://github.com/darakuneko/pipette-desktop/)
 - [VIA custom UI for Vial](https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/)
+
+## トラックボール設定
+
+[`src\pointingproccontroller.rs`](src\pointingproccontroller.rs) で設定可能です。
+
+デフォルトでは以下のように設定されています。
+
+- レイヤー0: カーソル移動
+- レイヤー1: 上下左右矢印キー
+- レイヤー2: 低速モード
+- レイヤー6: スクロールモード
 
 ## ビルド手順
 
