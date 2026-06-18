@@ -115,6 +115,14 @@ layers = 8
 [behavior]
 morse = { hold_timeout = "200ms", permissive_hold = true }
 
+[behavior.auto_mouse_layer]
+layer = 5
+timeout = "1000ms"
+threshold = 1
+
+[event.pointing]
+subs = 4
+
 [aliases]
 # User0 - User(N-1): switch to specific profile, where N is ble_profiles_num
 bt_sel_0 = "User0"
@@ -189,7 +197,7 @@ encoders = [["_", "_"]]
 name = "Layer 5"
 keys = """
 _    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _    MouseBtn1    MouseBtn2    _    _
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
@@ -199,7 +207,7 @@ encoders = [["_", "_"]]
 name = "Layer 6"
 keys = """
 _    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    _    _    _    _
+_    _    _    _    _    _         _    _    -    _    _    _
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
