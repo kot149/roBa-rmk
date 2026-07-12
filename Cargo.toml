@@ -11,29 +11,29 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 # rmk = { version = "0.8", features = [
-rmk = { path = "../rmk/rmk", features = [
+rmk = { git = "https://github.com/HaoboGu/rmk", rev = "baaab8b7d839e8938e016892965891f1bde45efe", features = [
     "nrf52840_ble",
     "split",
     "async_matrix",
     "adafruit_bl",
 ] }
-nrf-sdc = { git = "https://github.com/haobogu/nrf-sdc", rev = "ffe59a7aefaaa145a3d2474602f33387f80dcefa", features = [
+nrf-sdc = { git = "https://github.com/haobogu/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
     "defmt",
     "peripheral",
     "central",
     "nrf52840",
 ] }
-nrf-mpsl = { git = "https://github.com/haobogu/nrf-sdc", rev = "ffe59a7aefaaa145a3d2474602f33387f80dcefa", features = [
+nrf-mpsl = { git = "https://github.com/haobogu/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
     "defmt",
     "critical-section-impl",
     "nrf52840",
 ] }
-bt-hci = { version = "0.8", features = ["defmt"] }
+bt-hci = { version = "0.9", features = ["defmt"] }
 
 cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"
 embassy-time = { version = "0.5", features = ["tick-hz-32_768", "defmt", "defmt-timestamp-uptime"] }
-embassy-nrf = { version = "0.10", features = [
+embassy-nrf = { version = "0.11", features = [
     "defmt",
     "nrf52840",
     "time-driver-rtc1",
