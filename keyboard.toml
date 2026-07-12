@@ -12,6 +12,12 @@ ble_profiles_num = 5
 # controller_channel_pubs = 13 # default: 12
 # controller_channel_subs = 9 # default: 8
 
+[event.layer_change]
+subs = 2
+
+[event.pointing]
+subs = 3
+
 [ble]
 enabled = true
 
@@ -115,13 +121,10 @@ layers = 8
 [behavior]
 morse = { hold_timeout = "200ms", permissive_hold = true }
 
-[behavior.auto_mouse_layer]
-layer = 5
+[[behavior.auto_mouse_layer]]
+target_layer = 5
 timeout = "1000ms"
 threshold = 1
-
-[event.pointing]
-subs = 4
 
 [aliases]
 # User0 - User(N-1): switch to specific profile, where N is ble_profiles_num
