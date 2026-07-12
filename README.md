@@ -13,7 +13,7 @@
 - [x] ロータリーエンコーダー対応
 - [x] トラックボール対応
   - [x] スクロールレイヤー
-  - [ ] オートマウスレイヤー
+  - [x] オートマウスレイヤー
 - [x] バッテリー
   - [x] バッテリー稼働
   - [x] バッテリー充電
@@ -37,7 +37,7 @@
 - [Pipette](https://github.com/darakuneko/pipette-desktop/)
 - [VIA custom UI for Vial](https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/)
 
-## トラックボール設定
+## トラックボールのモード設定
 
 [`src/pointingproccontroller.rs`](src/pointingproccontroller.rs) で設定可能です。
 
@@ -47,6 +47,11 @@
 - レイヤー1: 上下左右矢印キー
 - レイヤー2: 低速モード
 - レイヤー6: スクロールモード
+
+## オートマウスレイヤー
+
+[`keyboard.toml`](keyboard.toml) の `auto_mouse_layer` で設定可能です。
+デフォルトではレイヤー5、タイムアウト1000msに設定しています。
 
 ## ビルド手順
 
