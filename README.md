@@ -39,7 +39,7 @@
 
 ## トラックボール設定
 
-[`src\pointingproccontroller.rs`](src\pointingproccontroller.rs) で設定可能です。
+[`src/pointingproccontroller.rs`](src/pointingproccontroller.rs) で設定可能です。
 
 デフォルトでは以下のように設定されています。
 
