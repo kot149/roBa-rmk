@@ -62,7 +62,12 @@ impl PointingProcessorController {
                     }),
                 });
             }
-            _ => {}
+            _ => {
+                publish_event(PointingProcessorEvent {
+                    device_id: 0,
+                    mode: PointingMode::Cursor(CursorConfig::default()),
+                });
+            }
         }
     }
 }
