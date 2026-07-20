@@ -206,7 +206,7 @@ encoders = [["_", "_"]]
 name = "Layer 5"
 keys = """
 _    _    _    _    _                   _    _    _    _    _
-_    _    _    _    _    _         _    _    MouseBtn1    MouseBtn2    _    _
+_    _    _    _    _    _         _    _    MouseBtn1    MouseBtn2    _    MO(6)
 _    _    _    _    _    _         _    _    _    _    _    _
 _    _    _    _    _    _         _    _                   _
 """
