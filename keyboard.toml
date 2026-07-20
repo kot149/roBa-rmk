@@ -126,7 +126,7 @@ morse = { hold_timeout = "200ms", permissive_hold = true }
 
 [[behavior.auto_mouse_layer]]
 target_layer = 5
-timeout = "1000ms"
+timeout = "10000ms"
 threshold = 1
 deactivate_on_key = true
 extra_mouse_keys = ["LCtrl", "LShift", "LAlt", "LGui"]
