@@ -18,6 +18,9 @@ subs = 2
 [event.pointing]
 subs = 3
 
+[event.action]
+subs = 1
+
 [ble]
 enabled = true
 
@@ -125,6 +128,9 @@ morse = { hold_timeout = "200ms", permissive_hold = true }
 target_layer = 5
 timeout = "1000ms"
 threshold = 1
+deactivate_on_key = true
+extra_mouse_keys = ["LCtrl", "LShift", "LAlt", "LGui"]
+reset_timeout_on_key = true
 
 [aliases]
 # User0 - User(N-1): switch to specific profile, where N is ble_profiles_num

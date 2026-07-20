@@ -11,7 +11,8 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 # rmk = { version = "0.8", features = [
-rmk = { git = "https://github.com/HaoboGu/rmk", rev = "baaab8b7d839e8938e016892965891f1bde45efe", features = [
+rmk = { git = "https://github.com/HaoboGu/rmk", rev = "a0ebb564e686fbb1f60c170d8b9032ddef057133", features = [
+# rmk = { path = "../rmk/rmk", features = [
     "nrf52840_ble",
     "split",
     "async_matrix",
