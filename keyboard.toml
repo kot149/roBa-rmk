@@ -105,7 +105,7 @@ reverse = false
 
 [storage]
 # Uncomment to clear keymap data modified via Vial
-clear_layout = true
+# clear_layout = true
 
 # Uncomment to clear ALL storage (keymap and BLE bonds)
 # clear_storage = true
