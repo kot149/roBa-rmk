@@ -121,7 +121,7 @@ map = """
 """
 
 [behavior]
-morse = { hold_timeout = "200ms", permissive_hold = true }
+morse = { hold_timeout = "200ms", permissive_hold = true, quick_tap_timeout = "250ms" }
 
 [[behavior.auto_mouse_layer]]
 target_layer = 5
