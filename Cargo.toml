@@ -9,15 +9,21 @@ readme = "README.md"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 
+[features]
+default = ["firmware"]
+firmware = ["dep:rmk"]
+
 [dependencies]
 # rmk = { version = "0.8", features = [
-rmk = { git = "https://github.com/HaoboGu/rmk", rev = "3fe4e41ab922bdfb0062a8fb2e175c0cb5e5eb32", features = [
+rmk = { git = "https://github.com/HaoboGu/rmk", rev = "3fe4e41ab922bdfb0062a8fb2e175c0cb5e5eb32", optional = true, features = [
 # rmk = { path = "../rmk/rmk", features = [
     "nrf52840_ble",
     "split",
     "async_matrix",
     "adafruit_bl",
 ] }
+
+[target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
 nrf-sdc = { git = "https://github.com/haobogu/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
     "defmt",
     "peripheral",
@@ -66,10 +72,12 @@ const-gen = "1.6"
 [[bin]]
 name = "central"
 path = "src/central.rs"
+test = false
 
 [[bin]]
 name = "peripheral"
 path = "src/peripheral.rs"
+test = false
 
 [profile.dev]
 codegen-units = 1      # better optimizations

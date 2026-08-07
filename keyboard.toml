@@ -21,6 +21,9 @@ subs = 3
 [event.action]
 subs = 1
 
+[event.connection_status_change]
+subs = 2
+
 [ble]
 enabled = true
 

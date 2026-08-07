@@ -20,8 +20,8 @@
   - [x] バッテリー残量の取得
     - [x] Central
     - [ ] Peripheral
-- [ ] LED
-  - [ ] 接続インジケーター
+- [x] LED
+  - [x] 接続インジケーター
   - [ ] バッテリー残量インジケーター
   - [ ] 充電状態インジケーター
 
@@ -37,7 +37,9 @@
 - [Pipette](https://github.com/darakuneko/pipette-desktop/)
 - [VIA custom UI for Vial](https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/)
 
-## トラックボールのモード設定
+## 機能説明
+
+### トラックボールのモード設定
 
 [`src/pointingproccontroller.rs`](src/pointingproccontroller.rs) で設定可能です。
 
@@ -48,10 +50,21 @@
 - レイヤー2: 低速モード
 - レイヤー6: スクロールモード
 
-## オートマウスレイヤー
+### オートマウスレイヤー
 
 [`keyboard.toml`](keyboard.toml) の `auto_mouse_layer` で設定可能です。
 デフォルトではレイヤー5、タイムアウト1000msに設定しています。
+非マウスキーを押すとオートマウスレイヤーが解除、マウスキーを押すとタイムアウトを延長します。
+
+### 接続インジケーター
+
+接続状態が変化したとき、RGB LEDが約750ms点灯します。起動直後は未接続として赤く点灯します。CentralでBLEプロファイルを切り換えたときは一時的な切断状態を表示せず、切り換え先が未ペアリングなら黄だけを表示し、ペアリング済みなら赤を表示して接続後に青へ切り換えます。
+
+| 色 | Central（右手側） | Peripheral（左手側） |
+| --- | --- | --- |
+| 青 | ホストに接続済み | Centralに接続済み |
+| 黄 | 未ペアリングのホストとのペアリング待ち（Advertising） | 使用しない |
+| 赤 | 未接続、またはペアリング済みホストへの再接続待ち（Advertising） | 未接続（Advertisingを含む） |
 
 ## ビルド手順
 
@@ -91,6 +104,14 @@ GitHub Actionsでビルドできます。ワークフローファイルは[こ�
    ```shell
    cargo make flash-peripheral
    ```
+
+### テスト
+
+組み込み向け依存関係を無効にし、ホストターゲットでテストします。Windowsでは以下のコマンドを実行してください。他のOSでは`--target`を`rustc -vV`に表示されるhostへ置き換えます。
+
+```powershell
+cargo nextest run --no-default-features --target x86_64-pc-windows-msvc
+```
 
 #### トラブルシューティング
 

@@ -18,6 +18,12 @@ use std::{env, fs};
 use xz2::read::XzEncoder;
 
 fn main() {
+    let embedded_arm = matches!(env::var("CARGO_CFG_TARGET_ARCH").as_deref(), Ok("arm"))
+        && matches!(env::var("CARGO_CFG_TARGET_OS").as_deref(), Ok("none"));
+    if !embedded_arm {
+        return;
+    }
+
     // Generate vial config at the root of project
     println!("cargo:rerun-if-changed=vial.json");
     println!("cargo:rerun-if-changed=keyboard.toml");
