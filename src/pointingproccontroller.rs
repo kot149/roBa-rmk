@@ -1,9 +1,9 @@
+use rmk::macros::processor;
 use rmk::{
     event::{LayerChangeEvent, PointingProcessorEvent, publish_event},
-    input_device::pointing::{PointingMode, CursorConfig, SniperConfig, ScrollConfig, CaretConfig},
+    input_device::pointing::{CaretConfig, CursorConfig, PointingMode, ScrollConfig, SniperConfig},
     types::keycode::HidKeyCode,
 };
-use rmk::macros::processor;
 
 #[processor(subscribe = [LayerChangeEvent])]
 #[derive(Default)]
