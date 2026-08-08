@@ -143,3 +143,7 @@ args = [
     "-Command",
     "$target = (rustc -vV | Select-String '^host:').ToString().Split(':', 2)[1].Trim(); cargo test --no-default-features --lib --target $target",
 ]
+
+[tasks.release]
+command = "cargo"
+args = ["release", "${@}", "--no-publish", "--no-push", "--execute"]
