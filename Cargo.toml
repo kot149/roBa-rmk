@@ -1,6 +1,6 @@
 [package]
 name = "roba-rmk"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["kot149"]
 description = "Keyboard firmware written in Rust"
 homepage = "https://github.com/haobogu/rmk"
