@@ -107,10 +107,10 @@ GitHub Actionsでビルドできます。ワークフローファイルは[こ�
 
 ### テスト
 
-組み込み向け依存関係を無効にし、ホストターゲットでテストします。Windowsでは以下のコマンドを実行してください。他のOSでは`--target`を`rustc -vV`に表示されるhostへ置き換えます。
+組み込み向け依存関係を無効にし、ホストターゲットでテストします。
 
-```powershell
-cargo nextest run --no-default-features --target x86_64-pc-windows-msvc
+```shell
+cargo make test
 ```
 
 #### トラブルシューティング

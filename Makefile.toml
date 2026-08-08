@@ -125,3 +125,21 @@ dependencies = ["uf2-peripheral"]
 
 [tasks.flash]
 dependencies = ["flash-central", "flash-peripheral"]
+
+
+[tasks.test]
+clear = true
+script_runner = "bash"
+script = '''
+target=$(rustc -vV | sed -n 's/^host: //p')
+cargo test --no-default-features --lib --target "$target"
+'''
+
+[tasks.test.windows]
+clear = true
+command = "powershell.exe"
+args = [
+    "-NoProfile",
+    "-Command",
+    "$target = (rustc -vV | Select-String '^host:').ToString().Split(':', 2)[1].Trim(); cargo test --no-default-features --lib --target $target",
+]
