@@ -26,7 +26,7 @@
             inherit system;
             overlays = [ (import rust-overlay) ];
           };
-          rustToolchain = pkgs.rust-bin.stable."1.92.0".default.override {
+          rustToolchain = pkgs.rust-bin.stable."1.93.0".default.override {
             extensions = [ "rust-src" "rustfmt" "llvm-tools-preview" ];
             targets = [ "thumbv7em-none-eabihf" ];
           };
