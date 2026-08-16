@@ -26,6 +26,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
+          components: llvm-tools-preview
           targets: thumbv7em-none-eabihf
 
       - name: Rust Cache

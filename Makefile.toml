@@ -1,18 +1,15 @@
-[tasks.install-llvm-tools]
-install_crate = { rustup_component_name = "llvm-tools" }
-
 [tasks.flip-link]
 install_crate = { crate_name = "flip-link", binary = "flip-link", test_arg = ["-h"] }
 
 [tasks.build-central]
 command = "cargo"
 args = ["build", "--release", "--bin", "central"]
-dependencies = ["install-llvm-tools", "flip-link"]
+dependencies = ["flip-link"]
 
 [tasks.build-peripheral]
 command = "cargo"
 args = ["build", "--release", "--bin", "peripheral"]
-dependencies = ["install-llvm-tools", "flip-link"]
+dependencies = ["flip-link"]
 
 [tasks.build]
 dependencies = ["build-central", "build-peripheral"]
