@@ -15,7 +15,7 @@ mod keyboard_central {
             Output::new(p.P0_26, Level::High, OutputDrive::Standard),
             Output::new(p.P0_30, Level::High, OutputDrive::Standard),
             Output::new(p.P0_06, Level::High, OutputDrive::Standard),
-            || stack.with_bond_information(|bonds| !bonds.is_empty()),
+            || false,
         )
     }
 

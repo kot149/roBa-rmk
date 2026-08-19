@@ -15,8 +15,8 @@ firmware = ["dep:rmk"]
 
 [dependencies]
 # rmk = { version = "0.8", features = [
-rmk = { git = "https://github.com/HaoboGu/rmk", rev = "3fe4e41ab922bdfb0062a8fb2e175c0cb5e5eb32", optional = true, features = [
-# rmk = { path = "../rmk/rmk", optional = true, features = [
+# rmk = { git = "https://github.com/HaoboGu/rmk", rev = "65df15775026bad1189139613ee3d338139bec3d", optional = true, features = [
+rmk = { path = "../rmk/rmk", optional = true, features = [
     "nrf52840_ble",
     "split",
     "async_matrix",
