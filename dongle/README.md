@@ -15,6 +15,10 @@ UF2 bootloader: 0x000F4000 .. 0x00100000
 
 The application image must not contain data outside the application range.
 
+> **Warning:** Before flashing, open `INFO_UF2.TXT` on the target drive. It must
+> contain `UF2 Bootloader 0.9.2` and `SoftDevice: S140 6.1.1`. Do not flash this
+> image to another nRF52840 UF2 drive. `cargo make flash-dongle` checks both lines.
+
 ## Build
 
 From the repository root:
@@ -24,7 +28,13 @@ cargo build --manifest-path dongle/Cargo.toml --release
 cargo make uf2-dongle
 ```
 
-Copy `roBa-raytac-dongle.uf2` to the Raytac UF2 bootloader drive.
+Flash with the metadata-checked task:
+
+```shell
+cargo make flash-dongle
+```
+
+For a manual copy, verify `INFO_UF2.TXT` first and copy only to the matching Raytac drive.
 
 The dongle opens a pairing window at power-on. A keyboard with no dongle bond
 seeks during that window. After pairing, the dongle reconnects only to its

@@ -193,9 +193,33 @@ args = ["make", "flash-uf2", "roBa-peripheral.uf2"]
 dependencies = ["uf2-peripheral"]
 
 [tasks.flash-dongle]
-command = "cargo"
-args = ["make", "flash-uf2", "roBa-raytac-dongle.uf2"]
 dependencies = ["uf2-dongle"]
+
+[tasks.flash-dongle.linux]
+script_runner = "bash"
+script = '''
+if grep -q -i "Microsoft" /proc/version; then
+    powershell.exe -ExecutionPolicy Bypass -File scripts/flash-raytac.ps1 -Uf2File "$(wslpath -w roBa-raytac-dongle.uf2)"
+else
+    echo "Flashing is not supported on this platform." >&2
+    exit 1
+fi
+'''
+
+[tasks.flash-dongle.windows]
+command = "powershell.exe"
+args = [
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "scripts/flash-raytac.ps1",
+    "-Uf2File",
+    "roBa-raytac-dongle.uf2",
+]
+
+[tasks.flash-dongle.mac]
+command = "bash"
+args = ["scripts/flash-raytac.sh", "roBa-raytac-dongle.uf2"]
 
 [tasks.flash]
 dependencies = ["flash-central", "flash-peripheral"]

@@ -115,6 +115,8 @@ resolution = 12
 reverse = false
 
 [storage]
+start_addr = 0xEC000
+num_sectors = 2
 # Uncomment to clear keymap data modified via Rynk
 # clear_layout = true
 

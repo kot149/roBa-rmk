@@ -8,9 +8,18 @@
 
 ## ファームウェア書き込み手順
 
-マイコンのリセットボタンを2回押してブートローダーを起動し、uf2ファイルをコピーして書き込みます。
+マイコンのリセットボタンを2回押してブートローダーを起動し、キーボードのuf2ファイルをコピーして書き込みます。
 
-もしZMKに戻したい場合は、単にZMKのuf2ファイルを書き込めば戻せるように設定してあります。
+Raytac dongleへ書き込む場合は、`INFO_UF2.TXT`に次の2行があることを確認してください。
+
+```text
+UF2 Bootloader 0.9.2
+SoftDevice: S140 6.1.1
+```
+
+`cargo make flash-dongle`を使うと、この情報を検査して対応するUF2ドライブだけへ書き込みます。手動でコピーする場合も同じ確認を行ってください。
+
+Raytac dongleからZMKへ戻す場合は、まず`mdbt50q_rx + settings_reset`のfirmwareを書き込み、起動後に通常のZMK dongle firmwareを書き込みます。`nrf52840-nosd` snippetは使用しないでください。
 
 ## キーマップ変更手順
 
@@ -86,7 +95,7 @@ GitHub Actionsでキーボードのcentral、peripheral、Raytac dongleをビル
    cargo make uf2-dongle
    ```
 8. uf2ファイルをフラッシュする
-   ※キーボードの自動書き込みはWindows・macOSでのみ動作します。Raytac dongleはUF2ドライブへファイルをコピーしてください。
+   ※キーボードの自動書き込みはWindows・macOSでのみ動作します。Raytac dongleは`cargo make flash-dongle`を使うか、`INFO_UF2.TXT`を確認してからUF2ドライブへコピーしてください。
 
    central（右手側）
    ```shell
