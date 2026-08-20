@@ -14,11 +14,17 @@
 
 ## キーマップ変更手順
 
-[VIal](https://get.vial.today) に対応しています。以下のいずれかを使用してキーマップを変更してください。
-- [Vial(Web版)](https://vial.rocks)
-- [Vial(デスクトップ版)](https://get.vial.today/download/)
-- [Pipette](https://github.com/darakuneko/pipette-desktop/)
-- [VIA custom UI for Vial](https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/)
+Rynkを使ってキーマップを変更できます。RynkはRMKのネイティブ設定プロトコルで、USB接続とBLE接続に対応しています。
+
+Rynkのホストツールは開発中です。ブラウザで試す場合は[RMKのRynkドキュメント](https://rmk.rs/docs/features/rynk)を参照してください。Chromium系ブラウザでWeb SerialまたはWebHIDを使用します。RynkとVialは同時に有効化できないため、このファームウェアではVialを使用しません。
+
+Rynkのロックされた操作には、`keyboard.toml`の`[host].unlock_keys`で指定したキーを同時に押します。
+
+## Raytac dongle
+
+`dongle/`にはRaytac MDBT50Q-RX用のUSB dongleファームウェアがあります。dongleはキーボードのHIDレポートとRynkフレームをBLE経由で受信し、USBへ中継します。
+
+キーボードのLayer 7にあるdongleキーを短く押すとdongle用の専用bond slotへ切り替わります。5秒長押しするとdongleのbondを消去して、別のdongleを探します。dongleは起動時にpairing windowを開き、pairing後は保存したキーボードへ再接続します。
 
 ## 機能説明
 
@@ -35,25 +41,24 @@
 
 ### オートマウスレイヤー
 
-[`keyboard.toml`](keyboard.toml) の `auto_mouse_layer` で設定可能です。
-デフォルトではレイヤー5、タイムアウト1000msに設定しています。
+[`keyboard.toml`](keyboard.toml) の`auto_mouse_layer`で設定可能です。
+デフォルトではレイヤー5、タイムアウト10000msに設定しています。
 非マウスキーを押すとオートマウスレイヤーが解除、マウスキーを押すとタイムアウトを延長します。
 
-### 接続インジケーター
+### Split peripheral接続インジケーター
 
-接続状態が変化したとき、RGB LEDが約750ms点灯します。起動直後は未接続として赤く点灯します。CentralでBLEプロファイルを切り換えたときは一時的な切断状態を表示せず、切り換え先が未ペアリングなら黄だけを表示し、ペアリング済みなら赤を表示して接続後に青へ切り換えます。
+Peripheral側の接続状態が変化したとき、RGB LEDが約750ms点灯します。
 
-| 色 | Central（右手側） | Peripheral（左手側） |
-| --- | --- | --- |
-| 青 | ホストに接続済み | Centralに接続済み |
-| 黄 | 未ペアリングのホストとのペアリング待ち（Advertising） | 使用しない |
-| 赤 | 未接続、またはペアリング済みホストへの再接続待ち（Advertising） | 未接続（Advertisingを含む） |
+| 色 | Peripheral（左手側） |
+| --- | --- |
+| 青 | Centralに接続済み |
+| 赤 | Centralに未接続 |
 
 ## ビルド手順
 
 ### GitHub Actionsによるビルド
 
-GitHub Actionsでビルドできます。ワークフローファイルは[こちら](.github/workflows/build.yml)
+GitHub Actionsでキーボードのcentral、peripheral、Raytac dongleをビルドできます。ワークフローファイルは[こちら](.github/workflows/build.yml)です。
 
 ### ローカルビルド手順
 
@@ -63,27 +68,32 @@ GitHub Actionsでビルドできます。ワークフローファイルは[こ�
    cd roBa-rmk
    ```
 2. [Rustup](https://www.rust-lang.org/ja/tools/install)をインストールする
-3. Windowsの場合、[LLVMをインストール](https://rust-lang.github.io/rust-bindgen/requirements.html#windows)し、環境変数`LIBCLANG_PATH`を`(LLVMのインストール先)\bin`に設定する
+3. Windowsの場合、[LLVMをインストール](https://rust-lang.github.io/rust-bindgen/requirements.html#windows)し、環境変数`LIBCLANG_PATH`を`(LLVMのインストール先)\\bin`に設定する
 4. nrf52840用のビルドターゲットを追加する
    ```shell
    rustup target add thumbv7em-none-eabihf
    ```
-5. rmkit, flip-link, cargo-makeをインストールする
+5. flip-link、cargo-make、cargo-binutils、cargo-hex-to-uf2をインストールする
    ```shell
-   cargo install rmkit flip-link cargo-make
+   cargo install flip-link cargo-make cargo-binutils cargo-hex-to-uf2
    ```
-6. uf2ファイルをコンパイルする
+6. キーボードのuf2ファイルをコンパイルする
    ```shell
    cargo make uf2
    ```
-7. uf2ファイルをフラッシュする
-   ※Windows・macOSでのみ動作します。
+7. Raytac dongleのuf2ファイルをコンパイルする
+   ```shell
+   cargo make uf2-dongle
+   ```
+8. uf2ファイルをフラッシュする
+   ※キーボードの自動書き込みはWindows・macOSでのみ動作します。Raytac dongleはUF2ドライブへファイルをコピーしてください。
 
-   central(右手側)
+   central（右手側）
    ```shell
    cargo make flash-central
    ```
-   peripheral(左手側)
+
+   peripheral（左手側）
    ```shell
    cargo make flash-peripheral
    ```
@@ -101,17 +111,19 @@ cargo make test
 ##### WindowsでClangライブラリが見つからないエラー
 
 エラー内容:
-```
+
+```text
 Unable to find libclang: "couldn't find any valid shared libraries matching: ['clang.dll', 'libclang.dll'], set the `LIBCLANG_PATH` environment variable to a path where one of these files can be found (invalid: [])"
 ```
 
 解決方法:
-[LLVMをインストール](https://rust-lang.github.io/rust-bindgen/requirements.html#windows)し、環境変数`LIBCLANG_PATH`を`(LLVMのインストール先)\bin`に設定してください。
+[LLVMをインストール](https://rust-lang.github.io/rust-bindgen/requirements.html#windows)し、環境変数`LIBCLANG_PATH`を`(LLVMのインストール先)\\bin`に設定してください。
 
 ##### Rustcのスタックオーバーフロー
 
 エラー内容:
-```
+
+```text
 thread 'rustc' (xxxxx) has overflowed its stack
 ```
 

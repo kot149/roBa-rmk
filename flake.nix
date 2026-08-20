@@ -48,6 +48,7 @@
               pkgs.flip-link
               pkgs.cargo-binutils
               cargoHexToUf2
+              pkgs.python3
               pkgs.clang
               pkgs.git
             ];

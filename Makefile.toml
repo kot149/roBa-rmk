@@ -50,6 +50,48 @@ args = [
 ]
 dependencies = ["build-peripheral"]
 
+[tasks.build-dongle]
+command = "cargo"
+args = [
+    "build",
+    "--manifest-path",
+    "dongle/Cargo.toml",
+    "--release",
+    "--bin",
+    "roba-raytac-dongle",
+]
+dependencies = ["flip-link"]
+
+[tasks.objcopy-dongle]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--manifest-path",
+    "dongle/Cargo.toml",
+    "--release",
+    "--bin",
+    "roba-raytac-dongle",
+    "--",
+    "-O",
+    "ihex",
+    "roBa-raytac-dongle.hex",
+]
+dependencies = ["build-dongle"]
+
+[tasks.check-dongle-hex]
+command = "python3"
+args = [
+    "scripts/check-ihex-range.py",
+    "roBa-raytac-dongle.hex",
+    "0x26000",
+    "0xEC000",
+]
+dependencies = ["objcopy-dongle"]
+
 [tasks.uf2-central]
 install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
     "hex-to-uf2",
@@ -83,6 +125,36 @@ args = [
     "nrf52840",
 ]
 dependencies = ["objcopy-peripheral"]
+
+[tasks.convert-dongle-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "roBa-raytac-dongle.hex",
+    "--output-path",
+    "roBa-raytac-dongle.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["check-dongle-hex"]
+
+[tasks.check-dongle-uf2]
+command = "python3"
+args = [
+    "scripts/check-uf2-range.py",
+    "roBa-raytac-dongle.uf2",
+    "0x26000",
+    "0xEC000",
+]
+dependencies = ["convert-dongle-uf2"]
+
+[tasks.uf2-dongle]
+dependencies = ["check-dongle-uf2"]
 
 [tasks.uf2]
 dependencies = ["uf2-central", "uf2-peripheral"]
@@ -119,6 +191,11 @@ dependencies = ["uf2-central"]
 command = "cargo"
 args = ["make", "flash-uf2", "roBa-peripheral.uf2"]
 dependencies = ["uf2-peripheral"]
+
+[tasks.flash-dongle]
+command = "cargo"
+args = ["make", "flash-uf2", "roBa-raytac-dongle.uf2"]
+dependencies = ["uf2-dongle"]
 
 [tasks.flash]
 dependencies = ["flash-central", "flash-peripheral"]

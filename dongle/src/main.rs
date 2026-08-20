@@ -1,0 +1,124 @@
+#![no_main]
+#![no_std]
+
+use defmt::{info, unwrap};
+use defmt_rtt as _;
+use embassy_executor::Spawner;
+use embassy_nrf::mode::Async;
+use embassy_nrf::peripherals::{RNG, USBD};
+use embassy_nrf::usb::vbus_detect::HardwareVbusDetect;
+use embassy_nrf::usb::{self, Driver};
+use embassy_nrf::{bind_interrupts, rng};
+use nrf_mpsl::Flash;
+use nrf_sdc::mpsl::MultiprotocolServiceLayer;
+use nrf_sdc::{self as sdc, mpsl};
+use panic_probe as _;
+use rmk::config::{DeviceConfig, StorageConfig};
+use rmk::dongle::{Dongle, DongleRouter};
+use rmk::run_all;
+use rmk::storage::new_storage_without_keymap;
+use rmk::usb::UsbTransport;
+use static_cell::StaticCell;
+
+bind_interrupts!(struct Irqs {
+    USBD => usb::InterruptHandler<USBD>;
+    RNG => rng::InterruptHandler<RNG>;
+    EGU0_SWI0 => nrf_sdc::mpsl::LowPrioInterruptHandler;
+    CLOCK_POWER => nrf_sdc::mpsl::ClockInterruptHandler, usb::vbus_detect::InterruptHandler;
+    RADIO => nrf_sdc::mpsl::HighPrioInterruptHandler;
+    TIMER0 => nrf_sdc::mpsl::HighPrioInterruptHandler;
+    RTC0 => nrf_sdc::mpsl::HighPrioInterruptHandler;
+});
+
+#[embassy_executor::task]
+async fn mpsl_task(mpsl: &'static MultiprotocolServiceLayer<'static>) -> ! {
+    mpsl.run().await
+}
+
+const L2CAP_TXQ: u8 = 3;
+const L2CAP_RXQ: u8 = 3;
+const L2CAP_MTU: usize = 251;
+const SDC_MEM_SIZE: usize = 15_472;
+const STORAGE_START_ADDR: usize = 0xEC000;
+const STORAGE_SECTORS: u8 = 2;
+
+fn build_sdc<'d, const N: usize>(
+    p: nrf_sdc::Peripherals<'d>,
+    rng: &'d mut rng::Rng<Async>,
+    mpsl: &'d MultiprotocolServiceLayer,
+    mem: &'d mut sdc::Mem<N>,
+) -> Result<nrf_sdc::SoftdeviceController<'d>, nrf_sdc::Error> {
+    sdc::Builder::new()?
+        .support_scan()
+        .support_central()
+        .support_dle_central()
+        .support_phy_update_central()
+        .support_le_2m_phy()
+        .central_count(1)?
+        .buffer_cfg(L2CAP_MTU as u16, L2CAP_MTU as u16, L2CAP_TXQ, L2CAP_RXQ)?
+        .build(p, rng, mpsl, mem)
+}
+
+fn ble_addr() -> [u8; 6] {
+    let ficr = embassy_nrf::pac::FICR;
+    let high = u64::from(ficr.deviceid(1).read());
+    let addr = high << 32 | u64::from(ficr.deviceid(0).read());
+    let addr = addr | 0x0000_c000_0000_0000;
+    unwrap!(addr.to_le_bytes()[..6].try_into())
+}
+
+#[embassy_executor::main]
+async fn main(spawner: Spawner) {
+    info!("RMK dongle on Raytac MDBT50Q-RX");
+
+    let p = embassy_nrf::init(embassy_nrf::config::Config::default());
+    let mpsl_p =
+        mpsl::Peripherals::new(p.RTC0, p.TIMER0, p.TEMP, p.PPI_CH19, p.PPI_CH30, p.PPI_CH31);
+    let lfclk_cfg = mpsl::raw::mpsl_clock_lfclk_cfg_t {
+        source: mpsl::raw::MPSL_CLOCK_LF_SRC_RC as u8,
+        rc_ctiv: mpsl::raw::MPSL_RECOMMENDED_RC_CTIV as u8,
+        rc_temp_ctiv: mpsl::raw::MPSL_RECOMMENDED_RC_TEMP_CTIV as u8,
+        accuracy_ppm: mpsl::raw::MPSL_DEFAULT_CLOCK_ACCURACY_PPM as u16,
+        skip_wait_lfclk_started: mpsl::raw::MPSL_DEFAULT_SKIP_WAIT_LFCLK_STARTED != 0,
+    };
+    static MPSL: StaticCell<MultiprotocolServiceLayer> = StaticCell::new();
+    static SESSION_MEM: StaticCell<mpsl::SessionMem<1>> = StaticCell::new();
+    let mpsl = MPSL.init(unwrap!(mpsl::MultiprotocolServiceLayer::with_timeslots(
+        mpsl_p,
+        Irqs,
+        lfclk_cfg,
+        SESSION_MEM.init(mpsl::SessionMem::new())
+    )));
+    spawner.spawn(unwrap!(mpsl_task(&*mpsl)));
+
+    let sdc_p = sdc::Peripherals::new(
+        p.PPI_CH17, p.PPI_CH18, p.PPI_CH20, p.PPI_CH21, p.PPI_CH22, p.PPI_CH23, p.PPI_CH24,
+        p.PPI_CH25, p.PPI_CH26, p.PPI_CH27, p.PPI_CH28, p.PPI_CH29,
+    );
+    let mut rng = rng::Rng::new(p.RNG, Irqs);
+    let mut sdc_mem = sdc::Mem::<SDC_MEM_SIZE>::new();
+    let sdc = unwrap!(build_sdc(sdc_p, &mut rng, mpsl, &mut sdc_mem));
+
+    let driver = Driver::new(p.USBD, Irqs, HardwareVbusDetect::new(Irqs));
+    let flash = Flash::take(mpsl, p.NVMC);
+    let device_config = DeviceConfig {
+        vid: 0x4c4b,
+        pid: 0x4644,
+        manufacturer: "roBa",
+        product_name: "roBa Raytac Dongle",
+        ..DeviceConfig::default()
+    };
+    let storage_config = StorageConfig {
+        start_addr: STORAGE_START_ADDR,
+        num_sectors: STORAGE_SECTORS,
+        ..Default::default()
+    };
+    let mut storage = new_storage_without_keymap(flash, storage_config).await;
+
+    let router = DongleRouter::new();
+    let mut dongle = Dongle::new(sdc, ble_addr(), &router);
+    let mut usb_transport = UsbTransport::new(driver, device_config).with_dongle_router(&router);
+
+    info!("Dongle services ready");
+    run_all!(usb_transport, dongle, storage).await;
+}

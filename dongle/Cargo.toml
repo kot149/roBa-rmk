@@ -1,0 +1,72 @@
+[package]
+name = "roba-raytac-dongle"
+version = "0.1.0"
+authors = ["kot149"]
+description = "RMK Rynk dongle firmware for the Raytac MDBT50Q-RX"
+homepage = "https://github.com/rmk-rs/rmk"
+repository = "https://github.com/kot149/roBa-rmk"
+readme = "README.md"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+rmk = { git = "https://github.com/HaoboGu/rmk", rev = "f8da2742971d048e0080e57d69d98f00a859e4e9", default-features = false, features = [
+    "defmt",
+    "storage",
+    "dongle",
+    "nrf52840_ble",
+] }
+nrf-sdc = { git = "https://github.com/alexmoon/nrf-sdc", rev = "f54b6389ffa2750d4d3a4f5435660cb66b47e51a", features = [
+    "defmt",
+    "peripheral",
+    "central",
+    "nrf52840",
+] }
+nrf-mpsl = { git = "https://github.com/alexmoon/nrf-sdc", rev = "f54b6389ffa2750d4d3a4f5435660cb66b47e51a", features = [
+    "defmt",
+    "critical-section-impl",
+    "nrf52840",
+] }
+bt-hci = { version = "0.9", features = ["defmt"] }
+
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.5"
+embassy-time = { version = "0.5", features = ["tick-hz-32_768", "defmt", "defmt-timestamp-uptime"] }
+embassy-nrf = { version = "0.11", features = [
+    "defmt",
+    "nrf52840",
+    "time-driver-rtc1",
+    "gpiote",
+    "unstable-pac",
+    "time",
+] }
+embassy-executor = { version = "0.10", features = [
+    "defmt",
+    "platform-cortex-m",
+    "executor-thread",
+] }
+defmt = "1.0"
+defmt-rtt = "1.0"
+panic-probe = { version = "1.0", features = ["print-defmt"] }
+static_cell = "2"
+
+[[bin]]
+name = "roba-raytac-dongle"
+path = "src/main.rs"
+test = false
+bench = false
+
+[profile.dev]
+codegen-units = 1
+debug = true
+opt-level = 1
+overflow-checks = true
+lto = false
+panic = "unwind"
+
+[profile.release]
+codegen-units = 1
+debug = true
+opt-level = "z"
+overflow-checks = false
+lto = "fat"

@@ -1,0 +1,6 @@
+MEMORY
+{
+  /* Raytac MDBT50Q-RX with S140 v6 and UF2 bootloader. */
+  FLASH : ORIGIN = 0x00026000, LENGTH = 0xC6000
+  RAM : ORIGIN = 0x20020000, LENGTH = 128K
+}

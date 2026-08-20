@@ -40,6 +40,9 @@ jobs:
       - name: Build UF2
         run: cargo make uf2
 
+      - name: Build Raytac dongle UF2
+        run: cargo make uf2-dongle
+
       - name: Calculate hash
         run: |
           sha256sum *.uf2
@@ -56,4 +59,9 @@ jobs:
           archive: false
           path: roBa-peripheral.uf2
 
+      - name: Upload artifact (Raytac dongle)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          archive: false
+          path: roBa-raytac-dongle.uf2
 
