@@ -3,8 +3,9 @@ param(
     [string]$Uf2File
 )
 
-$BootloaderPattern = '^UF2 Bootloader\s+0\.9\.2\s*$'
-$SoftDevicePattern = '^SoftDevice:\s+S140\s+6\.1\.1\s*$'
+$BoardIdPattern = '^Board-ID:\s+nRF52840-MDBT50Q_RX-verD\s*$'
+$BootloaderPattern = '^UF2 Bootloader\s+0\.9\.2(?:\s|$)'
+$SoftDevicePattern = '^SoftDevice:\s+S140\s+6\.1\.1(?:\s|$)'
 
 function Test-IsRaytacLoader {
     param([string]$DriveLetter)
@@ -18,7 +19,8 @@ function Test-IsRaytacLoader {
 
     try {
         $info = Get-Content -LiteralPath $infoFile -Raw -ErrorAction Stop
-        return $info -match "(?im)$BootloaderPattern" -and
+        return $info -match "(?im)$BoardIdPattern" -and
+            $info -match "(?im)$BootloaderPattern" -and
             $info -match "(?im)$SoftDevicePattern"
     }
     catch {
@@ -45,7 +47,7 @@ if (-not (Test-Path $Uf2File)) {
 }
 
 Write-Host "Firmware file: $Uf2File"
-Write-Host "Required INFO_UF2.TXT metadata: UF2 Bootloader 0.9.2, SoftDevice S140 6.1.1"
+Write-Host "Required INFO_UF2.TXT metadata: Board-ID nRF52840-MDBT50Q_RX-verD, UF2 Bootloader 0.9.2, SoftDevice S140 6.1.1"
 
 $initialDrives = Get-PSDrive -PSProvider FileSystem
 foreach ($drive in $initialDrives) {

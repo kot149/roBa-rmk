@@ -8,8 +8,9 @@ if [ -z "${1:-}" ]; then
 fi
 
 UF2_FILE="$1"
-BOOTLOADER_PATTERN='^UF2 Bootloader[[:space:]]+0\.9\.2[[:space:]]*$'
-SOFTDEVICE_PATTERN='^SoftDevice:[[:space:]]+S140[[:space:]]+6\.1\.1[[:space:]]*$'
+BOARD_ID_PATTERN='^Board-ID:[[:space:]]+nRF52840-MDBT50Q_RX-verD[[:space:]]*$'
+BOOTLOADER_PATTERN='^UF2 Bootloader[[:space:]]+0\.9\.2([[:space:]]|$)'
+SOFTDEVICE_PATTERN='^SoftDevice:[[:space:]]+S140[[:space:]]+6\.1\.1([[:space:]]|$)'
 
 if [ ! -f "$UF2_FILE" ]; then
     echo "Error: File '$UF2_FILE' not found." >&2
@@ -17,13 +18,14 @@ if [ ! -f "$UF2_FILE" ]; then
 fi
 
 echo "Firmware file: $UF2_FILE"
-echo "Required INFO_UF2.TXT metadata: UF2 Bootloader 0.9.2, SoftDevice S140 6.1.1"
+echo "Required INFO_UF2.TXT metadata: Board-ID nRF52840-MDBT50Q_RX-verD, UF2 Bootloader 0.9.2, SoftDevice S140 6.1.1"
 
 is_raytac_loader() {
     local mount_point="$1"
     local info_file="${mount_point}/INFO_UF2.TXT"
 
     [ -d "$mount_point" ] && [ -f "$info_file" ] || return 1
+    grep -Eiq "$BOARD_ID_PATTERN" "$info_file" || return 1
     grep -Eiq "$BOOTLOADER_PATTERN" "$info_file" || return 1
     grep -Eiq "$SOFTDEVICE_PATTERN" "$info_file" || return 1
 }

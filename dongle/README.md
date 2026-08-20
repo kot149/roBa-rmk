@@ -16,8 +16,9 @@ UF2 bootloader: 0x000F4000 .. 0x00100000
 The application image must not contain data outside the application range.
 
 > **Warning:** Before flashing, open `INFO_UF2.TXT` on the target drive. It must
-> contain `UF2 Bootloader 0.9.2` and `SoftDevice: S140 6.1.1`. Do not flash this
-> image to another nRF52840 UF2 drive. `cargo make flash-dongle` checks both lines.
+> contain `Board-ID: nRF52840-MDBT50Q_RX-verD`, `UF2 Bootloader 0.9.2`, and
+> `SoftDevice: S140 6.1.1`. Do not flash this image to another nRF52840 UF2
+> drive. `cargo make flash-dongle` checks all three lines.
 
 ## Build
 

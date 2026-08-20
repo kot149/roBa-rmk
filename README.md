@@ -10,9 +10,10 @@
 
 マイコンのリセットボタンを2回押してブートローダーを起動し、キーボードのuf2ファイルをコピーして書き込みます。
 
-Raytac dongleへ書き込む場合は、`INFO_UF2.TXT`に次の2行があることを確認してください。
+Raytac dongleへ書き込む場合は、`INFO_UF2.TXT`に次の3行があることを確認してください。
 
 ```text
+Board-ID: nRF52840-MDBT50Q_RX-verD
 UF2 Bootloader 0.9.2
 SoftDevice: S140 6.1.1
 ```
