@@ -6,8 +6,14 @@ product_id = 0x4643
 manufacturer = "RMK"
 board = "XIAO BLE"
 
+[host]
+vial_enabled = false
+rynk_enabled = true
+unlock_keys = [[0, 0], [0, 1]]
+
 [rmk]
 ble_profiles_num = 5
+dongle_pairing_window_secs = 30
 
 # controller_channel_pubs = 13 # default: 12
 # controller_channel_subs = 9 # default: 8
@@ -109,7 +115,7 @@ resolution = 12
 reverse = false
 
 [storage]
-# Uncomment to clear keymap data modified via Vial
+# Uncomment to clear keymap data modified via Rynk
 # clear_layout = true
 
 # Uncomment to clear ALL storage (keymap and BLE bonds)
@@ -155,6 +161,9 @@ bt_clr = "User7"
 
 # User(N+3): switch default output between USB/BLE
 bt_switch = "User8"
+
+# User(N+5): switch to the dedicated dongle bond slot
+bt_dongle = "User10"
 
 
 [keymap]
@@ -234,7 +243,7 @@ encoders = [["_", "_"]]
 name = "Layer 7 - Configuration"
 
 keys = """
-Bootloader  Reboot   _    _     _                           _          _          @bt_switch  Reboot     Bootloader
+Bootloader  Reboot   @bt_dongle _     _                           _          _          @bt_switch  Reboot     Bootloader
 _           _        _    _     _     _          @bt_prev   @bt_next   _          _           _          _
 _           _        _    _     _     _          @bt_sel_0  @bt_sel_1  @bt_sel_2  @bt_sel_3   @bt_sel_4  @bt_clr
 _           _        _    _     _     _          _          _                                            _

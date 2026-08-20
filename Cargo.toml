@@ -14,9 +14,12 @@ default = ["firmware"]
 firmware = ["dep:rmk"]
 
 [dependencies]
-# rmk = { version = "0.8", features = [
-# rmk = { git = "https://github.com/HaoboGu/rmk", rev = "65df15775026bad1189139613ee3d338139bec3d", optional = true, features = [
-rmk = { path = "../rmk/rmk", optional = true, features = [
+rmk = { git = "https://github.com/HaoboGu/rmk", rev = "f8da2742971d048e0080e57d69d98f00a859e4e9", optional = true, default-features = false, features = [
+    "defmt",
+    "storage",
+    "watchdog",
+    "rynk",
+    "dongle",
     "nrf52840_ble",
     "split",
     "async_matrix",
@@ -24,13 +27,13 @@ rmk = { path = "../rmk/rmk", optional = true, features = [
 ] }
 
 [target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
-nrf-sdc = { git = "https://github.com/haobogu/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
+nrf-sdc = { git = "https://github.com/alexmoon/nrf-sdc", rev = "f54b6389ffa2750d4d3a4f5435660cb66b47e51a", features = [
     "defmt",
     "peripheral",
     "central",
     "nrf52840",
 ] }
-nrf-mpsl = { git = "https://github.com/haobogu/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
+nrf-mpsl = { git = "https://github.com/alexmoon/nrf-sdc", rev = "f54b6389ffa2750d4d3a4f5435660cb66b47e51a", features = [
     "defmt",
     "critical-section-impl",
     "nrf52840",
@@ -58,15 +61,6 @@ defmt = "1.0"
 defmt-rtt = "1.0"
 panic-probe = { version = "1.0", features = ["print-defmt"] }
 static_cell = "2"
-
-rand = { version = "0.8.4", default-features = false }
-rand_core = { version = "0.6" }
-rand_chacha = { version = "0.3", default-features = false }
-
-[build-dependencies]
-xz2 = "0.1.7"
-json = "0.12"
-const-gen = "1.6"
 
 # Split keyboard example
 [[bin]]
