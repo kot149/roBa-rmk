@@ -1,10 +1,10 @@
 [package]
-name = "roba-rmk"
+name = "mona2-rmk"
 version = "0.6.0"
 authors = ["kot149"]
 description = "Keyboard firmware written in Rust"
 homepage = "https://github.com/haobogu/rmk"
-repository = "https://github.com/kot149/roBa-rmk"
+repository = "https://github.com/kot149/moNa2-rmk"
 readme = "README.md"
 edition = "2024"
 license = "MIT OR Apache-2.0"

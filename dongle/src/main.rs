@@ -104,8 +104,8 @@ async fn main(spawner: Spawner) {
     let device_config = DeviceConfig {
         vid: 0x4c4b,
         pid: 0x4644,
-        manufacturer: "roBa",
-        product_name: "roBa Raytac Dongle",
+        manufacturer: "moNa2",
+        product_name: "moNa2 Raytac Dongle",
         ..DeviceConfig::default()
     };
     let storage_config = StorageConfig {

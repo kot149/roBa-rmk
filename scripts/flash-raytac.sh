@@ -9,8 +9,8 @@ fi
 
 UF2_FILE="$1"
 BOARD_ID_PATTERN='^Board-ID:[[:space:]]+nRF52840-MDBT50Q_RX-verD[[:space:]]*$'
-BOOTLOADER_PATTERN='^UF2 Bootloader[[:space:]]+0\.9\.2([[:space:]]|$)'
-SOFTDEVICE_PATTERN='^SoftDevice:[[:space:]]+S140[[:space:]]+6\.1\.1([[:space:]]|$)'
+BOOTLOADER_PATTERN='^UF2 Bootloader[[:space:]]+(0\.5\.1|0\.9\.2)([[:space:]]|$)'
+SOFTDEVICE_PATTERN='^SoftDevice:[[:space:]]+S140([[:space:]]+version)?[[:space:]]+6\.1\.1([[:space:]]|$)'
 
 if [ ! -f "$UF2_FILE" ]; then
     echo "Error: File '$UF2_FILE' not found." >&2
@@ -18,7 +18,7 @@ if [ ! -f "$UF2_FILE" ]; then
 fi
 
 echo "Firmware file: $UF2_FILE"
-echo "Required INFO_UF2.TXT metadata: Board-ID nRF52840-MDBT50Q_RX-verD, UF2 Bootloader 0.9.2, SoftDevice S140 6.1.1"
+echo "Required INFO_UF2.TXT metadata: Board-ID nRF52840-MDBT50Q_RX-verD, UF2 Bootloader 0.5.1 or 0.9.2, SoftDevice S140 6.1.1"
 
 is_raytac_loader() {
     local mount_point="$1"

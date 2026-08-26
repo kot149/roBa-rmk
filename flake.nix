@@ -1,5 +1,5 @@
 {
-  description = "Development environment for roBa-rmk firmware";
+  description = "Development environment for moNa2-rmk firmware";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

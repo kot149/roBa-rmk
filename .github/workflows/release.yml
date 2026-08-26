@@ -28,19 +28,19 @@ jobs:
       - name: Download artifact (central)
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: roBa-central.uf2
+          name: moNa2-central.uf2
           path: firmware
 
       - name: Download artifact (peripheral)
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: roBa-peripheral.uf2
+          name: moNa2-peripheral.uf2
           path: firmware
 
       - name: Download artifact (Raytac dongle)
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: roBa-raytac-dongle.uf2
+          name: moNa2-raytac-dongle.uf2
           path: firmware
 
       - name: Set Tag Name

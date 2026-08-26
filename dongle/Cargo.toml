@@ -1,10 +1,10 @@
 [package]
-name = "roba-raytac-dongle"
+name = "mona2-raytac-dongle"
 version = "0.1.0"
 authors = ["kot149"]
 description = "RMK Rynk dongle firmware for the Raytac MDBT50Q-RX"
 homepage = "https://github.com/rmk-rs/rmk"
-repository = "https://github.com/kot149/roBa-rmk"
+repository = "https://github.com/kot149/moNa2-rmk"
 readme = "README.md"
 edition = "2024"
 license = "MIT OR Apache-2.0"
@@ -51,7 +51,7 @@ panic-probe = { version = "1.0", features = ["print-defmt"] }
 static_cell = "2"
 
 [[bin]]
-name = "roba-raytac-dongle"
+name = "mona2-raytac-dongle"
 path = "src/main.rs"
 test = false
 bench = false

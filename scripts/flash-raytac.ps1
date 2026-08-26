@@ -3,59 +3,98 @@ param(
     [string]$Uf2File
 )
 
-$BoardIdPattern = '^Board-ID:\s+nRF52840-MDBT50Q_RX-verD\s*$'
-$BootloaderPattern = '^UF2 Bootloader\s+0\.9\.2(?:\s|$)'
-$SoftDevicePattern = '^SoftDevice:\s+S140\s+6\.1\.1(?:\s|$)'
+$BoardIdPattern = '(?im)^\s*Board-ID\s*:\s*nRF52840-MDBT50Q_RX-verD\s*$'
+$BootloaderPattern = '(?im)^\s*UF2 Bootloader\s+(?:0\.5\.1|0\.9\.2)(?:\s|$)'
+$SoftDevicePattern = '(?im)^\s*SoftDevice\s*:\s*S140(?:\s+version)?\s+6\.1\.1(?:\s|$)'
 
-function Test-IsRaytacLoader {
-    param([string]$DriveLetter)
+function Get-Uf2Roots {
+    foreach ($drive in [System.IO.DriveInfo]::GetDrives()) {
+        try {
+            if ($drive.IsReady) {
+                $drive.RootDirectory.FullName
+            }
+        }
+        catch {
+            # A drive can disappear while the device is being mounted.
+        }
+    }
+}
 
-    $drivePath = $DriveLetter + ":\"
-    $infoFile = Join-Path $drivePath "INFO_UF2.TXT"
+function Get-InfoText {
+    param([string]$RootPath)
 
-    if (-not (Test-Path $drivePath) -or -not (Test-Path $infoFile)) {
-        return $false
+    $infoFile = Join-Path $RootPath "INFO_UF2.TXT"
+    if (-not (Test-Path -LiteralPath $infoFile)) {
+        return $null
     }
 
     try {
-        $info = Get-Content -LiteralPath $infoFile -Raw -ErrorAction Stop
-        return $info -match "(?im)$BoardIdPattern" -and
-            $info -match "(?im)$BootloaderPattern" -and
-            $info -match "(?im)$SoftDevicePattern"
+        return (Get-Content -LiteralPath $infoFile -ErrorAction Stop | Out-String)
     }
     catch {
+        return $null
+    }
+}
+
+function Test-IsRaytacLoader {
+    param([string]$RootPath)
+
+    $info = Get-InfoText -RootPath $RootPath
+    if ($null -eq $info) {
         return $false
     }
+
+    return $info -match $BoardIdPattern -and
+        $info -match $BootloaderPattern -and
+        $info -match $SoftDevicePattern
+}
+
+function Find-RaytacLoader {
+    param(
+        [string[]]$Roots,
+        [switch]$Report
+    )
+
+    foreach ($root in $Roots) {
+        if (Test-IsRaytacLoader -RootPath $root) {
+            return $root
+        }
+
+        if ($Report -and $null -ne (Get-InfoText -RootPath $root)) {
+            Write-Host "INFO_UF2.TXT found on $root, but the Raytac metadata did not match; skipping..."
+        }
+    }
+
+    return $null
 }
 
 function Write-Firmware {
-    param([string]$TargetDrive, [string]$SourceFile)
+    param([string]$TargetRoot, [string]$SourceFile)
 
-    if (-not (Test-IsRaytacLoader -DriveLetter $TargetDrive)) {
-        throw "Drive $TargetDrive no longer reports the required Raytac UF2 metadata."
+    if (-not (Test-IsRaytacLoader -RootPath $TargetRoot)) {
+        throw "Drive $TargetRoot no longer reports the required Raytac UF2 metadata."
     }
 
-    $targetPath = Join-Path ($TargetDrive + ":\") (Split-Path $SourceFile -Leaf)
-    Write-Host "Copying Raytac firmware to drive $TargetDrive..."
-    Copy-Item -Path $SourceFile -Destination $targetPath -Force
+    $targetPath = Join-Path $TargetRoot (Split-Path $SourceFile -Leaf)
+    Write-Host "Copying Raytac firmware to drive $TargetRoot..."
+    Copy-Item -LiteralPath $SourceFile -Destination $targetPath -Force
     Write-Host "Flash completed!"
 }
 
-if (-not (Test-Path $Uf2File)) {
+if (-not (Test-Path -LiteralPath $Uf2File)) {
     Write-Error "File '$Uf2File' not found."
     exit 1
 }
 
 Write-Host "Firmware file: $Uf2File"
-Write-Host "Required INFO_UF2.TXT metadata: Board-ID nRF52840-MDBT50Q_RX-verD, UF2 Bootloader 0.9.2, SoftDevice S140 6.1.1"
+Write-Host "Required INFO_UF2.TXT metadata: Board-ID nRF52840-MDBT50Q_RX-verD, UF2 Bootloader 0.5.1 or 0.9.2, SoftDevice S140 6.1.1"
 
-$initialDrives = Get-PSDrive -PSProvider FileSystem
-foreach ($drive in $initialDrives) {
-    if (Test-IsRaytacLoader -DriveLetter $drive.Name) {
-        Write-Host "Raytac UF2 loader found on drive $($drive.Name)"
-        Write-Firmware -TargetDrive $drive.Name -SourceFile $Uf2File
-        exit 0
-    }
+$initialRoots = @(Get-Uf2Roots)
+$targetRoot = Find-RaytacLoader -Roots $initialRoots -Report
+if ($null -ne $targetRoot) {
+    Write-Host "Raytac UF2 loader found at $targetRoot"
+    Write-Firmware -TargetRoot $targetRoot -SourceFile $Uf2File
+    exit 0
 }
 
 Write-Host "No compatible Raytac UF2 loader found."
@@ -71,26 +110,23 @@ try {
             }
         }
 
-        Start-Sleep -Milliseconds 100
-        $currentDrives = Get-PSDrive -PSProvider FileSystem
-        $newDrives = $currentDrives | Where-Object {
-            $drive = $_
-            -not ($initialDrives | Where-Object { $_.Name -eq $drive.Name })
+        Start-Sleep -Milliseconds 250
+        $currentRoots = @(Get-Uf2Roots)
+        $targetRoot = Find-RaytacLoader -Roots $currentRoots
+        if ($null -ne $targetRoot) {
+            Write-Host "Compatible Raytac UF2 loader detected at $targetRoot"
+            Write-Firmware -TargetRoot $targetRoot -SourceFile $Uf2File
+            exit 0
         }
 
-        foreach ($newDrive in $newDrives) {
-            Write-Host "New drive detected: $($newDrive.Name)"
-            if (Test-IsRaytacLoader -DriveLetter $newDrive.Name) {
-                Write-Host "Compatible Raytac UF2 loader detected on drive $($newDrive.Name)"
-                Write-Firmware -TargetDrive $newDrive.Name -SourceFile $Uf2File
-                exit 0
+        $newRoots = @($currentRoots | Where-Object { $_ -notin $initialRoots })
+        foreach ($root in $newRoots) {
+            Write-Host "New drive detected: $root"
+            if (-not (Test-IsRaytacLoader -RootPath $root)) {
+                Write-Host "Drive $root does not report the required Raytac metadata, skipping..."
             }
-            Write-Host "Drive $($newDrive.Name) does not report the required Raytac metadata, skipping..."
         }
-
-        if ($newDrives) {
-            $initialDrives = $currentDrives
-        }
+        $initialRoots = $currentRoots
     }
 }
 catch {

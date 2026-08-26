@@ -3,7 +3,7 @@
 
 use embassy_nrf::gpio::{Level, Output, OutputDrive};
 use rmk::macros::rmk_peripheral;
-use roba_rmk::SplitConnectionLed;
+use mona2_rmk::SplitConnectionLed;
 
 #[rmk_peripheral(id = 0)]
 mod keyboard_peripheral {

@@ -1,7 +1,7 @@
-# roBa Raytac dongle
+# moNa2 Raytac dongle
 
 RMK BLE dongle firmware for the Raytac MDBT50Q-RX. The dongle connects to one
-bonded roBa keyboard and relays HID reports and Rynk frames over USB.
+bonded moNa2 keyboard and relays HID reports and Rynk frames over USB.
 
 ## Flash layout
 
@@ -16,9 +16,10 @@ UF2 bootloader: 0x000F4000 .. 0x00100000
 The application image must not contain data outside the application range.
 
 > **Warning:** Before flashing, open `INFO_UF2.TXT` on the target drive. It must
-> contain `Board-ID: nRF52840-MDBT50Q_RX-verD`, `UF2 Bootloader 0.9.2`, and
-> `SoftDevice: S140 6.1.1`. Do not flash this image to another nRF52840 UF2
-> drive. `cargo make flash-dongle` checks all three lines.
+> contain `Board-ID: nRF52840-MDBT50Q_RX-verD`, `UF2 Bootloader 0.5.1`, and
+> `SoftDevice: S140 version 6.1.1`. The flasher also accepts bootloader 0.9.2
+> and the equivalent SoftDevice line without `version`. Do not flash this image
+> to another nRF52840 UF2 drive. `cargo make flash-dongle` checks all three lines.
 
 ## Build
 

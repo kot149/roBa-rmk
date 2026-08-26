@@ -1,6 +1,6 @@
 [keyboard]
-name = "roBa-rmk"
-product_name = "roBa-rmk"
+name = "moNa2-rmk"
+product_name = "moNa2-rmk"
 vendor_id = 0x4c4b
 product_id = 0x4643
 manufacturer = "RMK"
@@ -118,10 +118,10 @@ reverse = false
 start_addr = 0xEC000
 num_sectors = 2
 # Uncomment to clear keymap data modified via Rynk
-# clear_layout = true
+clear_layout = true
 
 # Uncomment to clear ALL storage (keymap and BLE bonds)
-# clear_storage = true
+clear_storage = true
 
 [layout]
 rows = 4

@@ -28,7 +28,7 @@ args = [
     "--",
     "-O",
     "ihex",
-    "roBa-central.hex",
+    "moNa2-central.hex",
 ]
 dependencies = ["build-central"]
 
@@ -46,7 +46,7 @@ args = [
     "--",
     "-O",
     "ihex",
-    "roBa-peripheral.hex",
+    "moNa2-peripheral.hex",
 ]
 dependencies = ["build-peripheral"]
 
@@ -58,7 +58,7 @@ args = [
     "dongle/Cargo.toml",
     "--release",
     "--bin",
-    "roba-raytac-dongle",
+    "mona2-raytac-dongle",
 ]
 dependencies = ["flip-link"]
 
@@ -74,11 +74,11 @@ args = [
     "dongle/Cargo.toml",
     "--release",
     "--bin",
-    "roba-raytac-dongle",
+    "mona2-raytac-dongle",
     "--",
     "-O",
     "ihex",
-    "roBa-raytac-dongle.hex",
+    "moNa2-raytac-dongle.hex",
 ]
 dependencies = ["build-dongle"]
 
@@ -86,7 +86,7 @@ dependencies = ["build-dongle"]
 command = "python3"
 args = [
     "scripts/check-ihex-range.py",
-    "roBa-raytac-dongle.hex",
+    "moNa2-raytac-dongle.hex",
     "0x26000",
     "0xEC000",
 ]
@@ -101,9 +101,9 @@ command = "cargo"
 args = [
     "hex-to-uf2",
     "--input-path",
-    "roBa-central.hex",
+    "moNa2-central.hex",
     "--output-path",
-    "roBa-central.uf2",
+    "moNa2-central.uf2",
     "--family",
     "nrf52840",
 ]
@@ -118,9 +118,9 @@ command = "cargo"
 args = [
     "hex-to-uf2",
     "--input-path",
-    "roBa-peripheral.hex",
+    "moNa2-peripheral.hex",
     "--output-path",
-    "roBa-peripheral.uf2",
+    "moNa2-peripheral.uf2",
     "--family",
     "nrf52840",
 ]
@@ -135,9 +135,9 @@ command = "cargo"
 args = [
     "hex-to-uf2",
     "--input-path",
-    "roBa-raytac-dongle.hex",
+    "moNa2-raytac-dongle.hex",
     "--output-path",
-    "roBa-raytac-dongle.uf2",
+    "moNa2-raytac-dongle.uf2",
     "--family",
     "nrf52840",
 ]
@@ -147,7 +147,7 @@ dependencies = ["check-dongle-hex"]
 command = "python3"
 args = [
     "scripts/check-uf2-range.py",
-    "roBa-raytac-dongle.uf2",
+    "moNa2-raytac-dongle.uf2",
     "0x26000",
     "0xEC000",
 ]
@@ -184,12 +184,12 @@ args = ["scripts/flash.sh", "${@}"]
 
 [tasks.flash-central]
 command = "cargo"
-args = ["make", "flash-uf2", "roBa-central.uf2"]
+args = ["make", "flash-uf2", "moNa2-central.uf2"]
 dependencies = ["uf2-central"]
 
 [tasks.flash-peripheral]
 command = "cargo"
-args = ["make", "flash-uf2", "roBa-peripheral.uf2"]
+args = ["make", "flash-uf2", "moNa2-peripheral.uf2"]
 dependencies = ["uf2-peripheral"]
 
 [tasks.flash-dongle]
@@ -199,7 +199,7 @@ dependencies = ["uf2-dongle"]
 script_runner = "bash"
 script = '''
 if grep -q -i "Microsoft" /proc/version; then
-    powershell.exe -ExecutionPolicy Bypass -File scripts/flash-raytac.ps1 -Uf2File "$(wslpath -w roBa-raytac-dongle.uf2)"
+    powershell.exe -ExecutionPolicy Bypass -File scripts/flash-raytac.ps1 -Uf2File "$(wslpath -w moNa2-raytac-dongle.uf2)"
 else
     echo "Flashing is not supported on this platform." >&2
     exit 1
@@ -214,12 +214,12 @@ args = [
     "-File",
     "scripts/flash-raytac.ps1",
     "-Uf2File",
-    "roBa-raytac-dongle.uf2",
+    "moNa2-raytac-dongle.uf2",
 ]
 
 [tasks.flash-dongle.mac]
 command = "bash"
-args = ["scripts/flash-raytac.sh", "roBa-raytac-dongle.uf2"]
+args = ["scripts/flash-raytac.sh", "moNa2-raytac-dongle.uf2"]
 
 [tasks.flash]
 dependencies = ["flash-central", "flash-peripheral"]

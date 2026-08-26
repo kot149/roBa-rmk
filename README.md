@@ -1,10 +1,10 @@
-# roBa-rmk
+# moNa2-rmk
 
-[roBa](https://github.com/kumamuk-git/roBa)キーボードの[RMK](https://rmk.rs)ファームウェアです。
+[moNa2](https://github.com/kumamuk-git/moNa2)キーボードの[RMK](https://rmk.rs)ファームウェアです。
 
 ## ビルド済みファイルのダウンロード
 
-[Releases](https://github.com/kot149/roBa-rmk/releases) からダウンロードできます。
+[Releases](https://github.com/kot149/moNa2-rmk/releases) からダウンロードできます。
 
 ## ファームウェア書き込み手順
 
@@ -14,8 +14,8 @@ Raytac dongleへ書き込む場合は、`INFO_UF2.TXT`に次の3行があるこ�
 
 ```text
 Board-ID: nRF52840-MDBT50Q_RX-verD
-UF2 Bootloader 0.9.2
-SoftDevice: S140 6.1.1
+UF2 Bootloader 0.5.1
+SoftDevice: S140 version 6.1.1
 ```
 
 `cargo make flash-dongle`を使うと、この情報を検査して対応するUF2ドライブだけへ書き込みます。手動でコピーする場合も同じ確認を行ってください。
@@ -74,8 +74,8 @@ GitHub Actionsでキーボードのcentral、peripheral、Raytac dongleをビル
 
 1. リポジトリをクローンする
    ```shell
-   git clone https://github.com/kot149/roBa-rmk.git
-   cd roBa-rmk
+   git clone https://github.com/kot149/moNa2-rmk.git
+   cd moNa2-rmk
    ```
 2. [Rustup](https://www.rust-lang.org/ja/tools/install)をインストールする
 3. Windowsの場合、[LLVMをインストール](https://rust-lang.github.io/rust-bindgen/requirements.html#windows)し、環境変数`LIBCLANG_PATH`を`(LLVMのインストール先)\\bin`に設定する

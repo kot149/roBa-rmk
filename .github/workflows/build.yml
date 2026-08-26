@@ -51,17 +51,16 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           archive: false
-          path: roBa-central.uf2
+          path: moNa2-central.uf2
 
       - name: Upload artifact (peripheral)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           archive: false
-          path: roBa-peripheral.uf2
+          path: moNa2-peripheral.uf2
 
       - name: Upload artifact (Raytac dongle)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           archive: false
-          path: roBa-raytac-dongle.uf2
-
+          path: moNa2-raytac-dongle.uf2
