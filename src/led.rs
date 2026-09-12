@@ -32,10 +32,6 @@ impl RgbLed {
         match color {
             LedColor::Blue => self.blue.set_level(Level::Low),
             LedColor::Red => self.red.set_level(Level::Low),
-            LedColor::Yellow => {
-                self.red.set_level(Level::Low);
-                self.green.set_level(Level::Low);
-            }
         }
     }
 }
@@ -104,44 +100,27 @@ impl LedPulse {
 }
 
 #[processor(subscribe = [ConnectionStatusChangeEvent], poll_interval = 50)]
-pub struct BleConnectionLed<F>
-where
-    F: Fn() -> bool,
-{
+pub struct BleConnectionLed {
     pulse: LedPulse,
-    has_bond: F,
     state: BleLedState,
 }
 
-impl<F> BleConnectionLed<F>
-where
-    F: Fn() -> bool,
-{
-    pub fn new(
-        red: Output<'static>,
-        green: Output<'static>,
-        blue: Output<'static>,
-        has_bond: F,
-    ) -> Self {
+impl BleConnectionLed {
+    pub fn new(red: Output<'static>, green: Output<'static>, blue: Output<'static>) -> Self {
         Self {
             pulse: LedPulse::new(RgbLed::new(red, green, blue)),
-            has_bond,
             state: BleLedState::new(),
         }
     }
 
     async fn on_connection_status_change_event(&mut self, event: ConnectionStatusChangeEvent) {
         let ble = event.0.ble;
-        let has_bond = match ble.state {
-            BleState::Advertising => (self.has_bond)(),
-            _ => false,
-        };
         let state = match ble.state {
             BleState::Advertising => BleConnectionState::Advertising,
             BleState::Connected => BleConnectionState::Connected,
             BleState::Inactive => BleConnectionState::Inactive,
         };
-        let update = self.state.update(ble.profile, state, has_bond);
+        let update = self.state.update(ble.profile, state);
 
         if update.clear {
             self.pulse.clear();

@@ -52,6 +52,13 @@
               pkgs.git
             ];
             LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
+            # Use bare-metal GCC for C dependencies (e.g. p256-cortex-m4-sys)
+            # targeting thumbv7em-none-eabihf. The default Nix clang wrapper
+            # injects host-only flags (hardening options unsupported by clang
+            # for ARM, glibc -isystem paths) that break bare-metal C builds.
+            # NOTE: do NOT add the cross GCC to `packages`: its setup hook
+            # would override the default `CC` for host builds as well.
+            CC_thumbv7em_none_eabihf = "${pkgs.pkgsCross.arm-embedded.buildPackages.gcc}/bin/arm-none-eabi-gcc";
           };
         });
     };

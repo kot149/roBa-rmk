@@ -10,12 +10,11 @@ use roba_rmk::BleConnectionLed;
 #[rmk_central]
 mod keyboard_central {
     #[register_processor(poll)]
-    fn ble_connection_led() -> BleConnectionLed<impl Fn() -> bool> {
+    fn ble_connection_led() -> BleConnectionLed {
         BleConnectionLed::new(
             Output::new(p.P0_26, Level::High, OutputDrive::Standard),
             Output::new(p.P0_30, Level::High, OutputDrive::Standard),
             Output::new(p.P0_06, Level::High, OutputDrive::Standard),
-            || stack.with_bond_information(|bonds| !bonds.is_empty()),
         )
     }
 

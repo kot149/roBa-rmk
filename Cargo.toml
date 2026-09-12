@@ -15,7 +15,7 @@ firmware = ["dep:rmk"]
 
 [dependencies]
 # rmk = { version = "0.8", features = [
-rmk = { git = "https://github.com/HaoboGu/rmk", rev = "3fe4e41ab922bdfb0062a8fb2e175c0cb5e5eb32", optional = true, features = [
+rmk = { git = "https://github.com/HaoboGu/rmk", rev = "55ac0c61b3cd8ef1a4e55beb71ebf210562e3e24", optional = true, features = [
 # rmk = { path = "../rmk/rmk", optional = true, features = [
     "nrf52840_ble",
     "split",
@@ -24,18 +24,18 @@ rmk = { git = "https://github.com/HaoboGu/rmk", rev = "3fe4e41ab922bdfb0062a8fb2
 ] }
 
 [target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
-nrf-sdc = { git = "https://github.com/haobogu/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
+nrf-sdc = { version = "0.4.0", features = [
     "defmt",
     "peripheral",
     "central",
     "nrf52840",
 ] }
-nrf-mpsl = { git = "https://github.com/haobogu/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
+nrf-mpsl = { version = "0.4.0", features = [
     "defmt",
     "critical-section-impl",
     "nrf52840",
 ] }
-bt-hci = { version = "0.9", features = ["defmt"] }
+bt-hci = { version = "0.10", features = ["defmt"] }
 
 cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"

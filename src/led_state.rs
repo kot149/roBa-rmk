@@ -2,7 +2,6 @@
 pub(crate) enum LedColor {
     Blue,
     Red,
-    Yellow,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -44,12 +43,7 @@ impl BleLedState {
         Some(self.status)
     }
 
-    pub(crate) fn update(
-        &mut self,
-        profile: u8,
-        state: BleConnectionState,
-        has_bond: bool,
-    ) -> LedUpdate {
+    pub(crate) fn update(&mut self, profile: u8, state: BleConnectionState) -> LedUpdate {
         let profile_changed = self.profile != profile;
         self.profile = profile;
 
@@ -63,7 +57,7 @@ impl BleLedState {
             };
         }
 
-        let status = color_for_ble_state(state, has_bond);
+        let status = color_for_ble_state(state);
         let changed = self.profile_switching || !self.initialized || self.status != status;
 
         self.profile_switching = false;
@@ -77,12 +71,10 @@ impl BleLedState {
     }
 }
 
-fn color_for_ble_state(state: BleConnectionState, has_bond: bool) -> LedColor {
+fn color_for_ble_state(state: BleConnectionState) -> LedColor {
     match state {
         BleConnectionState::Connected => LedColor::Blue,
-        BleConnectionState::Advertising if has_bond => LedColor::Red,
-        BleConnectionState::Advertising => LedColor::Yellow,
-        BleConnectionState::Inactive => LedColor::Red,
+        BleConnectionState::Advertising | BleConnectionState::Inactive => LedColor::Red,
     }
 }
 
@@ -127,19 +119,11 @@ mod tests {
     }
 
     #[test]
-    fn advertising_is_yellow_only_without_a_bond() {
-        let mut unpaired = BleLedState::new();
-        let mut paired = BleLedState::new();
+    fn advertising_is_red() {
+        let mut state = BleLedState::new();
 
         assert_eq!(
-            unpaired.update(0, BleConnectionState::Advertising, false),
-            LedUpdate {
-                clear: false,
-                color: Some(LedColor::Yellow),
-            }
-        );
-        assert_eq!(
-            paired.update(0, BleConnectionState::Advertising, true),
+            state.update(0, BleConnectionState::Advertising),
             LedUpdate {
                 clear: false,
                 color: Some(LedColor::Red),
@@ -152,28 +136,28 @@ mod tests {
         let mut state = BleLedState::new();
 
         assert_eq!(
-            state.update(0, BleConnectionState::Connected, true).color,
+            state.update(0, BleConnectionState::Connected).color,
             Some(LedColor::Blue)
         );
     }
 
     #[test]
-    fn switching_from_connected_to_unpaired_shows_only_yellow() {
+    fn switching_to_another_profile_shows_only_target_state() {
         let mut state = BleLedState::new();
-        state.update(0, BleConnectionState::Connected, true);
+        state.update(0, BleConnectionState::Connected);
 
         assert_eq!(
-            state.update(1, BleConnectionState::Inactive, false),
+            state.update(1, BleConnectionState::Inactive),
             LedUpdate {
                 clear: true,
                 color: None,
             }
         );
         assert_eq!(
-            state.update(1, BleConnectionState::Advertising, false),
+            state.update(1, BleConnectionState::Advertising),
             LedUpdate {
                 clear: false,
-                color: Some(LedColor::Yellow),
+                color: Some(LedColor::Red),
             }
         );
     }
@@ -183,7 +167,7 @@ mod tests {
         let mut state = BleLedState::new();
 
         assert_eq!(
-            state.update(1, BleConnectionState::Inactive, false),
+            state.update(1, BleConnectionState::Inactive),
             LedUpdate {
                 clear: true,
                 color: None,
@@ -191,31 +175,29 @@ mod tests {
         );
         assert_eq!(state.initial_color(), None);
         assert_eq!(
-            state
-                .update(1, BleConnectionState::Advertising, false)
-                .color,
-            Some(LedColor::Yellow)
+            state.update(1, BleConnectionState::Advertising).color,
+            Some(LedColor::Red)
         );
     }
 
     #[test]
-    fn switching_from_unpaired_to_paired_shows_red_then_blue() {
+    fn switching_profiles_shows_red_then_blue() {
         let mut state = BleLedState::new();
-        state.update(0, BleConnectionState::Advertising, false);
+        state.update(0, BleConnectionState::Advertising);
 
         assert_eq!(
-            state.update(1, BleConnectionState::Inactive, false),
+            state.update(1, BleConnectionState::Inactive),
             LedUpdate {
                 clear: true,
                 color: None,
             }
         );
         assert_eq!(
-            state.update(1, BleConnectionState::Advertising, true).color,
+            state.update(1, BleConnectionState::Advertising).color,
             Some(LedColor::Red)
         );
         assert_eq!(
-            state.update(1, BleConnectionState::Connected, true).color,
+            state.update(1, BleConnectionState::Connected).color,
             Some(LedColor::Blue)
         );
     }
@@ -223,10 +205,10 @@ mod tests {
     #[test]
     fn repeated_advertising_state_does_not_flash_twice() {
         let mut state = BleLedState::new();
-        state.update(0, BleConnectionState::Advertising, false);
+        state.update(0, BleConnectionState::Advertising);
 
         assert_eq!(
-            state.update(0, BleConnectionState::Advertising, false),
+            state.update(0, BleConnectionState::Advertising),
             LedUpdate {
                 clear: false,
                 color: None,
