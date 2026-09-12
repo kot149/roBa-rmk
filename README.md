@@ -14,11 +14,7 @@
 
 ## キーマップ変更手順
 
-[VIal](https://get.vial.today) に対応しています。以下のいずれかを使用してキーマップを変更してください。
-- [Vial(Web版)](https://vial.rocks)
-- [Vial(デスクトップ版)](https://get.vial.today/download/)
-- [Pipette](https://github.com/darakuneko/pipette-desktop/)
-- [VIA custom UI for Vial](https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/)
+[Rynk](https://gui.rmk.rs) で編集できます。
 
 ## 機能説明
 

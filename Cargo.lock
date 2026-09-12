@@ -1990,6 +1990,7 @@ version = "0.4.0"
 source = "git+https://github.com/HaoboGu/rmk?rev=55ac0c61b3cd8ef1a4e55beb71ebf210562e3e24#55ac0c61b3cd8ef1a4e55beb71ebf210562e3e24"
 dependencies = [
  "bitfield-struct",
+ "cobs",
  "defmt 1.1.1",
  "heapless 0.9.3",
  "postcard",
