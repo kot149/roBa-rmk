@@ -44,6 +44,7 @@ col_offset = 6
 battery_adc_pin = "P0_31"
 adc_divider_measured = 510
 adc_divider_total = 1510
+battery_user_description = "Right"
 
 [[split.central.output]]
 # Set P0.14 (VBAT_ENABLE) to LOW to enable battery voltage reading for XIAO BLE.
@@ -66,6 +67,7 @@ col_offset = 0
 battery_adc_pin = "P0_31"
 adc_divider_measured = 510
 adc_divider_total = 1510
+battery_user_description = "Left"
 
 [[split.peripheral.output]]
 # Set P0.14 (VBAT_ENABLE) to LOW to enable battery voltage reading for XIAO BLE.
