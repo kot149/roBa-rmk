@@ -47,6 +47,7 @@
               pkgs.cargo-make
               pkgs.flip-link
               pkgs.cargo-binutils
+              pkgs.cargo-release
               cargoHexToUf2
               pkgs.clang
               pkgs.git
