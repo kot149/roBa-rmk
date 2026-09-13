@@ -35,7 +35,7 @@
             version = "0.1.2";
             src = pkgs.fetchurl {
               name = "${pname}-${version}.tar.gz";
-              url = "https://crates.io/api/v1/crates/${pname}/${version}/download";
+              url = "https://static.crates.io/crates/${pname}/${pname}-${version}.crate";
               hash = "sha256-z5YSymOl5xdkiYxPeLp3iXtgF2ZY7iFeafsC2zfoc6k=";
             };
             cargoHash = "sha256-4bNL5W0OF8NbRTFhDrArdpjRsSWoTwnnTDcPcOvPSNU=";
