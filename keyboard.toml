@@ -109,6 +109,9 @@ resolution = 12
 reverse = false
 
 [storage]
+start_addr = 0xD4000
+# num_sectors = 32 # default: 32 = 128 KiB
+
 # Uncomment to clear keymap data modified via Vial
 # clear_layout = true
 
