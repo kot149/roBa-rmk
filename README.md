@@ -24,7 +24,7 @@
 
 ### トラックボールのモード設定
 
-[`src/pointingproccontroller.rs`](src/pointingproccontroller.rs) で設定可能です。
+[`src/pointingproccontroller.rs`](src/pointingproccontroller.rs) で設定可能です。現状、適用には再ビルドが必要です。Vialでは設定できません。
 
 デフォルトでは以下のように設定されています。
 
@@ -35,7 +35,7 @@
 
 ### オートマウスレイヤー
 
-[`keyboard.toml`](keyboard.toml) の `auto_mouse_layer` で設定可能です。
+[`keyboard.toml`](keyboard.toml) の `auto_mouse_layer` で設定可能です。現状、適用には再ビルドが必要です。Vialでは設定できません。
 デフォルトではレイヤー5、タイムアウト1000msに設定しています。
 非マウスキーを押すとオートマウスレイヤーが解除、マウスキーを押すとタイムアウトを延長します。
 
@@ -91,8 +91,6 @@ GitHub Actionsでビルドできます。ワークフローファイルは[こ�
    ```
 
 ### テスト
-
-組み込み向け依存関係を無効にし、ホストターゲットでテストします。
 
 ```shell
 cargo make test
