@@ -32,6 +32,10 @@ impl RgbLed {
         match color {
             LedColor::Blue => self.blue.set_level(Level::Low),
             LedColor::Red => self.red.set_level(Level::Low),
+            LedColor::Yellow => {
+                self.red.set_level(Level::Low);
+                self.green.set_level(Level::Low);
+            }
         }
     }
 }
@@ -120,7 +124,7 @@ impl BleConnectionLed {
             BleState::Connected => BleConnectionState::Connected,
             BleState::Inactive => BleConnectionState::Inactive,
         };
-        let update = self.state.update(ble.profile, state);
+        let update = self.state.update(ble.profile, state, ble.bonded);
 
         if update.clear {
             self.pulse.clear();
