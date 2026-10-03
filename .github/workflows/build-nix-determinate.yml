@@ -1,8 +1,10 @@
-name: Build RMK firmware with Nix
+name: Build RMK firmware with Nix (Determinate)
 on:
   workflow_call:
   workflow_dispatch:
-  pull_request:
+  # NOTE: pull_request trigger intentionally omitted to avoid duplicate runs
+  # with build-nix.yml (upstream Nix). Run manually via workflow_dispatch
+  # when comparing against the non-Determinate setup.
 
 jobs:
   build:
@@ -12,19 +14,13 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Nix
-        uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31.11.1
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          extra_nix_config: |
-            keep-outputs = true
-            keep-derivations = true
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
 
-      - name: Restore and save Nix store
-        uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7.0.2
+      - name: Enable Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7 # v15
         with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-
-          gc-max-store-size-linux: 1G
+          use-flakehub: false
+          use-gha-cache: true
 
       - name: Build UF2
         run: nix develop --command cargo make uf2
