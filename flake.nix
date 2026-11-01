@@ -51,7 +51,14 @@
               cargoHexToUf2
               pkgs.clang
               pkgs.git
+              # Host build dependencies (e.g. xz2 for build.rs) must resolve
+              # inside the Nix store. Without these, the shell falls back to
+              # the host's pkg-config and libraries, and the resulting build
+              # script cannot find them at runtime through the Nix loader.
+              pkgs.pkg-config
+              pkgs.xz
             ];
+            LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.xz ];
             LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
             # Use bare-metal GCC for C dependencies (e.g. p256-cortex-m4-sys)
             # targeting thumbv7em-none-eabihf. The default Nix clang wrapper
